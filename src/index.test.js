@@ -1,5 +1,5 @@
-import {insertMany} from './ddb';
-import {parallelScan} from './';
+const {insertMany} = require('./ddb');
+const {parallelScan} = require('./');
 
 describe('parallelScan', () => {
   const files = [

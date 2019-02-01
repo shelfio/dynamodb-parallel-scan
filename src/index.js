@@ -1,11 +1,11 @@
-import pMap from 'p-map';
-import cloneDeep from 'lodash.clonedeep';
-import times from 'lodash.times';
-import {scan} from './ddb';
+const pMap = require('p-map');
+const cloneDeep = require('lodash.clonedeep');
+const times = require('lodash.times');
+const {scan} = require('./ddb');
 
 const debug = require('debug')('ddb-parallel-scan');
 
-export async function parallelScan(scanParams, {concurrency}) {
+async function parallelScan(scanParams, {concurrency}) {
   const segments = times(concurrency);
   const docs = [];
 
@@ -43,3 +43,7 @@ export async function parallelScan(scanParams, {concurrency}) {
 
   return docs;
 }
+
+module.exports = {
+  parallelScan
+};

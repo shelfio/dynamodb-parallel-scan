@@ -1,5 +1,5 @@
-import assignIn from 'lodash.assignin';
-import {DynamoDB} from 'aws-sdk';
+const assignIn = require('assignIn');
+const {DynamoDB} = require('aws-sdk');
 
 const config = {convertEmptyValues: true};
 
@@ -7,13 +7,13 @@ if (process.env.ENVIRONMENT === 'local') {
   assignIn(config, {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'});
 }
 
-export const documentClient = new DynamoDB.DocumentClient(config);
+const documentClient = new DynamoDB.DocumentClient(config);
 
-export async function scan() {
+async function scan() {
   return documentClient.scan(...arguments).promise();
 }
 
-export function insertMany({items, tableName}) {
+function insertMany({items, tableName}) {
   const params = {
     RequestItems: {
       [tableName]: items.map(item => ({
@@ -30,3 +30,8 @@ export function insertMany({items, tableName}) {
 async function batchWrite() {
   return documentClient.batchWrite(...arguments).promise();
 }
+
+module.exports = {
+  scan,
+  insertMany
+};
