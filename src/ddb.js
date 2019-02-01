@@ -1,4 +1,4 @@
-const assignIn = require('assignIn');
+const assignIn = require('lodash.assignin');
 const {DynamoDB} = require('aws-sdk');
 
 const config = {convertEmptyValues: true};
