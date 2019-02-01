@@ -1,11 +1,10 @@
-const assignIn = require('lodash.assignin');
 const {DynamoDB} = require('aws-sdk');
 
-const config = {convertEmptyValues: true};
-
-if (process.env.ENVIRONMENT === 'local') {
-  assignIn(config, {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'});
-}
+const isTest = process.env.JEST_WORKER_ID;
+const config = {
+  convertEmptyValues: true,
+  ...(isTest && {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'})
+};
 
 const documentClient = new DynamoDB.DocumentClient(config);
 
