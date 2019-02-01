@@ -1,6 +1,6 @@
 {
   "name": "@shelf/dynamodb-parallel-scan",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Scan large DynamoDB tables faster with parallelism",
   "license": "MIT",
   "repository": "shelfio/dynamodb-parallel-scan",
