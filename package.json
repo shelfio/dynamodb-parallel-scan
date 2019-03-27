@@ -29,7 +29,7 @@
     "p-map": "2.0.0"
   },
   "devDependencies": {
-    "@shelf/eslint-config": "0.0.8",
+    "@shelf/eslint-config": "0.1.0",
     "aws-sdk": "2.290.0",
     "dynamodb-local": "0.0.25",
     "eslint": "5.15.3",
