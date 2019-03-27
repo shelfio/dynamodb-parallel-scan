@@ -1,4 +1,4 @@
-const {DynamoDB} = require('aws-sdk');
+const DynamoDB = require('aws-sdk/clients/dynamodb');
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
