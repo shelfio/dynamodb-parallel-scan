@@ -33,7 +33,7 @@
     "@shelf/jest-dynamodb": "1.0.2",
     "aws-sdk": "2.290.0",
     "eslint": "5.16.0",
-    "husky": "2.1.0",
+    "husky": "2.2.0",
     "jest": "24.7.1",
     "lint-staged": "8.1.5",
     "prettier": "1.17.0"
