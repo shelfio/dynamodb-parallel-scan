@@ -29,7 +29,7 @@
     "p-map": "2.1.0"
   },
   "devDependencies": {
-    "@shelf/eslint-config": "0.3.2",
+    "@shelf/eslint-config": "0.3.4",
     "@shelf/jest-dynamodb": "1.0.2",
     "aws-sdk": "2.290.0",
     "eslint": "5.16.0",
