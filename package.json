@@ -26,7 +26,7 @@
     "debug": "4.1.1",
     "lodash.clonedeep": "4.5.0",
     "lodash.times": "4.3.2",
-    "p-map": "2.1.0"
+    "p-map": "3.0.0"
   },
   "devDependencies": {
     "@shelf/eslint-config": "0.3.10",
