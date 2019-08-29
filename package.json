@@ -30,7 +30,7 @@
   },
   "devDependencies": {
     "@shelf/eslint-config": "0.3.13",
-    "@shelf/jest-dynamodb": "1.4.0",
+    "@shelf/jest-dynamodb": "1.4.1",
     "aws-sdk": "2.488.0",
     "eslint": "6.2.2",
     "husky": "3.0.4",
