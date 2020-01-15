@@ -2,27 +2,48 @@
   "name": "@shelf/dynamodb-parallel-scan",
   "version": "1.0.2",
   "description": "Scan large DynamoDB tables faster with parallelism",
-  "license": "MIT",
+  "keywords": [],
   "repository": "shelfio/dynamodb-parallel-scan",
+  "license": "MIT",
   "author": {
     "name": "Vlad Holubiev",
     "email": "vlad@shelf.io",
     "url": "shelf.io"
-  },
-  "engines": {
-    "node": ">=12"
-  },
-  "scripts": {
-    "coverage": "jest --coverage",
-    "lint": "eslint . --fix",
-    "test": "export ENVIRONMENT=local && jest src --runInBand"
   },
   "files": [
     "lib"
   ],
   "main": "lib.inde.js",
   "types": "lib/index.d.ts",
-  "keywords": [],
+  "scripts": {
+    "build": "rm -rf lib/ && yarn build:types && babel src --out-dir lib --ignore '**/*.test.ts' --extensions '.ts'",
+    "build:types": "tsc --emitDeclarationOnly --declaration --isolatedModules false --declarationDir lib",
+    "coverage": "jest --coverage",
+    "lint": "eslint . --ext .js,.ts,.json --fix --quiet",
+    "lint:ci": "eslint . --ext .js,.ts,.json --quiet",
+    "test": "export ENVIRONMENT=local && jest src --runInBand",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "*.{html,json,md,yml}": [
+      "prettier --write --ignore-path=./.eslintignore",
+      "git add"
+    ],
+    "*.{ts,js}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "debug": "4.1.1",
     "lodash.clonedeep": "4.5.0",
@@ -53,24 +74,8 @@
   "peerDependencies": {
     "aws-sdk": "2.x.x"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "post-commit": "git update-index --again"
-    }
-  },
-  "lint-staged": {
-    "*.{html,json,md,yml}": [
-      "prettier --write --ignore-path=./.eslintignore",
-      "git add"
-    ],
-    "*.{ts,js}": [
-      "eslint --fix",
-      "git add"
-    ]
+  "engines": {
+    "node": ">=12"
   },
   "publishConfig": {
     "access": "public"
