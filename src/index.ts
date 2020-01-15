@@ -2,24 +2,24 @@ import pMap from 'p-map';
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import Debug from 'debug';
-import DynamoDB from 'aws-sdk/clients/dynamodb';
+import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 import {scan} from './ddb';
 
 const debug = Debug('ddb-parallel-scan');
 
 export async function parallelScan(
-  scanParams: DynamoDB.ScanInput,
+  scanParams: DocumentClient.ScanInput,
   {concurrency}
-): Promise<DynamoDB.Types.ItemList> {
+): Promise<DocumentClient.ItemList> {
   const segments: number[] = times(concurrency);
-  const docs: DynamoDB.ItemList = [];
+  const docs: DocumentClient.ItemList = [];
 
   debug(`Started parallel scan with ${concurrency} threads`);
 
   await pMap(segments, async (_, segmentIndex) => {
-    let ExclusiveStartKey: DynamoDB.Key;
+    let ExclusiveStartKey: DocumentClient.Key;
 
-    const params: DynamoDB.ScanInput = {
+    const params: DocumentClient.ScanInput = {
       ...cloneDeep(scanParams),
       Segment: segmentIndex,
       TotalSegments: concurrency
