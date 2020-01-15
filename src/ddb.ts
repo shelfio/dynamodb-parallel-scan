@@ -6,9 +6,11 @@ const config = {
   ...(isTest && {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'})
 };
 
-const documentClient = new DynamoDB.DocumentClient(config);
+const documentClient: DynamoDB.DocumentClient = new DynamoDB.DocumentClient(config);
 
-export async function scan(params): Promise<DynamoDB.DocumentClient.ScanOutput> {
+export async function scan(
+  params: DynamoDB.ScanInput
+): Promise<DynamoDB.DocumentClient.ScanOutput> {
   return documentClient.scan(params).promise();
 }
 
@@ -16,7 +18,7 @@ export function insertMany({
   items,
   tableName
 }): Promise<DynamoDB.DocumentClient.BatchWriteItemOutput> {
-  const params = {
+  const params: DynamoDB.BatchWriteItemInput = {
     RequestItems: {
       [tableName]: items.map(item => ({
         PutRequest: {
