@@ -18,7 +18,7 @@ export function insertMany({
   items,
   tableName
 }): Promise<DynamoDB.DocumentClient.BatchWriteItemOutput> {
-  const params: DynamoDB.BatchWriteItemInput = {
+  const params: DynamoDB.DocumentClient.BatchWriteItemInput = {
     RequestItems: {
       [tableName]: items.map(item => ({
         PutRequest: {
