@@ -1,11 +1,12 @@
-const pMap = require('p-map');
-const cloneDeep = require('lodash.clonedeep');
-const times = require('lodash.times');
-const {scan} = require('./ddb');
+import pMap from 'p-map';
+import cloneDeep from 'lodash.clonedeep';
+import times from 'lodash.times';
+import Debug from 'debug';
+import {scan} from './ddb';
 
-const debug = require('debug')('ddb-parallel-scan');
+const debug = Debug('ddb-parallel-scan');
 
-async function parallelScan(scanParams, {concurrency}) {
+export async function parallelScan(scanParams, {concurrency}) {
   const segments = times(concurrency);
   const docs = [];
 
@@ -14,9 +15,11 @@ async function parallelScan(scanParams, {concurrency}) {
   await pMap(segments, async (_, segmentIndex) => {
     let ExclusiveStartKey = '';
 
-    const params = cloneDeep(scanParams);
-    params.Segment = segmentIndex;
-    params.TotalSegments = concurrency;
+    const params = {
+      ...cloneDeep(scanParams),
+      Segment: segmentIndex,
+      TotalSegments: concurrency
+    };
 
     const now = Date.now();
     debug(`[${segmentIndex}/${concurrency}][start]`, {ExclusiveStartKey});
@@ -41,9 +44,8 @@ async function parallelScan(scanParams, {concurrency}) {
 
   debug(`Finished parallel scan with ${concurrency} threads. Fetched ${docs.length} items`);
 
+  //kek
+  // console.log(docs);
+
   return docs;
 }
-
-module.exports = {
-  parallelScan
-};
