@@ -2,26 +2,52 @@
   "name": "@shelf/dynamodb-parallel-scan",
   "version": "1.0.2",
   "description": "Scan large DynamoDB tables faster with parallelism",
-  "license": "MIT",
+  "keywords": [
+    "parallel-scan",
+    "dynamodb",
+    "aws"
+  ],
   "repository": "shelfio/dynamodb-parallel-scan",
+  "license": "MIT",
   "author": {
     "name": "Vlad Holubiev",
     "email": "vlad@shelf.io",
     "url": "shelf.io"
   },
-  "engines": {
-    "node": ">=8"
-  },
-  "scripts": {
-    "coverage": "jest --coverage",
-    "lint": "eslint . --fix",
-    "test": "export ENVIRONMENT=local && jest src --runInBand"
-  },
   "files": [
-    "src"
+    "lib"
   ],
-  "main": "src/index.js",
-  "keywords": [],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "rm -rf lib/ && yarn build:types && babel src --out-dir lib --ignore '**/*.test.ts' --extensions '.ts'",
+    "build:types": "tsc --emitDeclarationOnly --declaration --isolatedModules false --declarationDir lib",
+    "coverage": "jest --coverage",
+    "lint": "eslint . --ext .js,.ts,.json --fix --quiet",
+    "lint:ci": "eslint . --ext .js,.ts,.json --quiet",
+    "test": "export ENVIRONMENT=local && jest src --runInBand",
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged",
+      "post-commit": "git update-index --again"
+    }
+  },
+  "lint-staged": {
+    "*.{html,json,md,yml}": [
+      "prettier --write --ignore-path=./.eslintignore",
+      "git add"
+    ],
+    "*.{ts,js}": [
+      "eslint --fix",
+      "git add"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  },
   "dependencies": {
     "debug": "4.1.1",
     "lodash.clonedeep": "4.5.0",
@@ -29,35 +55,31 @@
     "p-map": "3.0.0"
   },
   "devDependencies": {
+    "@babel/cli": "7.8.3",
+    "@babel/core": "7.8.3",
+    "@babel/preset-env": "7.8.3",
+    "@babel/preset-typescript": "7.8.3",
     "@shelf/eslint-config": "0.13.0",
     "@shelf/jest-dynamodb": "1.6.0",
+    "@types/debug": "4.1.5",
+    "@types/jest": "24.9.0",
+    "@types/lodash.clonedeep": "4.5.6",
+    "@types/lodash.times": "4.3.6",
+    "@types/node": "12",
+    "@types/p-map": "2.0.0",
     "aws-sdk": "2.536.0",
     "eslint": "6.8.0",
     "husky": "4.0.9",
     "jest": "24.9.0",
     "lint-staged": "9.5.0",
-    "prettier": "1.19.1"
+    "prettier": "1.19.1",
+    "typescript": "3.7.4"
   },
   "peerDependencies": {
     "aws-sdk": "2.x.x"
   },
-  "jest": {
-    "testEnvironment": "node"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged"
-    }
-  },
-  "lint-staged": {
-    "*.js": [
-      "eslint --fix",
-      "git add"
-    ],
-    "*.{html,json,md,yml}": [
-      "prettier --write",
-      "git add"
-    ]
+  "engines": {
+    "node": ">=12"
   },
   "publishConfig": {
     "access": "public"

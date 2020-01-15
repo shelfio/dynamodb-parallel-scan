@@ -1,24 +1,31 @@
-const pMap = require('p-map');
-const cloneDeep = require('lodash.clonedeep');
-const times = require('lodash.times');
-const {scan} = require('./ddb');
+import pMap from 'p-map';
+import cloneDeep from 'lodash.clonedeep';
+import times from 'lodash.times';
+import Debug from 'debug';
+import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
+import {scan} from './ddb';
 
-const debug = require('debug')('ddb-parallel-scan');
+const debug = Debug('ddb-parallel-scan');
 
-async function parallelScan(scanParams, {concurrency}) {
-  const segments = times(concurrency);
-  const docs = [];
+export async function parallelScan(
+  scanParams: DocumentClient.ScanInput,
+  {concurrency}: {concurrency: number}
+): Promise<DocumentClient.ItemList> {
+  const segments: number[] = times(concurrency);
+  const docs: DocumentClient.ItemList = [];
 
   debug(`Started parallel scan with ${concurrency} threads`);
 
   await pMap(segments, async (_, segmentIndex) => {
-    let ExclusiveStartKey = '';
+    let ExclusiveStartKey: DocumentClient.Key;
 
-    const params = cloneDeep(scanParams);
-    params.Segment = segmentIndex;
-    params.TotalSegments = concurrency;
+    const params: DocumentClient.ScanInput = {
+      ...cloneDeep(scanParams),
+      Segment: segmentIndex,
+      TotalSegments: concurrency
+    };
 
-    const now = Date.now();
+    const now: number = Date.now();
     debug(`[${segmentIndex}/${concurrency}][start]`, {ExclusiveStartKey});
 
     do {
@@ -43,7 +50,3 @@ async function parallelScan(scanParams, {concurrency}) {
 
   return docs;
 }
-
-module.exports = {
-  parallelScan
-};

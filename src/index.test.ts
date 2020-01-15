@@ -1,5 +1,5 @@
-const {insertMany} = require('./ddb');
-const {parallelScan} = require('./');
+import {insertMany} from './ddb';
+import {parallelScan} from './';
 
 describe('parallelScan', () => {
   const files = [
@@ -33,7 +33,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(10);
 
-    for (let item of items) {
+    for (const item of items) {
       expect(files).toContainEqual(item);
     }
   });
@@ -52,7 +52,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(10);
 
-    for (let item of items) {
+    for (const item of items) {
       expect(files).toContainEqual(item);
     }
   });
@@ -71,7 +71,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(3);
 
-    for (let item of items) {
+    for (const item of items) {
       expect(files).toContainEqual(item);
     }
   });
