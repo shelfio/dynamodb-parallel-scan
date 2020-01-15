@@ -9,7 +9,7 @@ const debug = Debug('ddb-parallel-scan');
 
 export async function parallelScan(
   scanParams: DocumentClient.ScanInput,
-  {concurrency}
+  {concurrency}: {concurrency: number}
 ): Promise<DocumentClient.ItemList> {
   const segments: number[] = times(concurrency);
   const docs: DocumentClient.ItemList = [];
