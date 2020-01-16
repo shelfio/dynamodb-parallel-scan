@@ -59,7 +59,7 @@
     "@babel/core": "7.8.3",
     "@babel/preset-env": "7.8.3",
     "@babel/preset-typescript": "7.8.3",
-    "@shelf/eslint-config": "0.13.0",
+    "@shelf/eslint-config": "0.14.0",
     "@shelf/jest-dynamodb": "1.6.0",
     "@types/debug": "4.1.5",
     "@types/jest": "24.9.0",
