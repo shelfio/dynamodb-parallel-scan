@@ -3,9 +3,9 @@
   "version": "2.0.1",
   "description": "Scan large DynamoDB tables faster with parallelism",
   "keywords": [
-    "parallel-scan",
+    "aws",
     "dynamodb",
-    "aws"
+    "parallel-scan"
   ],
   "repository": "shelfio/dynamodb-parallel-scan",
   "license": "MIT",
