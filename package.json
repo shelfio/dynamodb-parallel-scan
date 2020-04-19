@@ -69,9 +69,9 @@
     "@types/p-map": "2.0.0",
     "aws-sdk": "2.585.0",
     "eslint": "6.8.0",
-    "husky": "4.2.3",
+    "husky": "4.2.5",
     "jest": "25.2.4",
-    "lint-staged": "10.1.1",
+    "lint-staged": "10.1.6",
     "prettier": "1.19.1",
     "typescript": "3.8.2"
   },
