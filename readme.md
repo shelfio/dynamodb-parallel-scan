@@ -37,6 +37,15 @@ const {parallelScan} = require('@shelf/dynamodb-parallel-scan');
 
 ![](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/images/ParallelScan.png)
 
+## Publish
+
+```sh
+$ git checkout master
+$ yarn version
+$ yarn publish
+$ git push origin master
+```
+
 ## License
 
 MIT © [Shelf](https://shelf.io)
