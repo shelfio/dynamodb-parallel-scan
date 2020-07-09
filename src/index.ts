@@ -22,7 +22,7 @@ export async function parallelScan(
     const params: DocumentClient.ScanInput = {
       ...cloneDeep(scanParams),
       Segment: segmentIndex,
-      TotalSegments: concurrency
+      TotalSegments: concurrency,
     };
 
     const now: number = Date.now();
