@@ -4,7 +4,7 @@ import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
   convertEmptyValues: true,
-  ...(isTest && {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'})
+  ...(isTest && {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'}),
 };
 
 const documentClient: DocumentClient = new DynamoDB.DocumentClient(config);
@@ -16,12 +16,12 @@ export async function scan(params: DocumentClient.ScanInput): Promise<DocumentCl
 export function insertMany({items, tableName}): Promise<DocumentClient.BatchWriteItemOutput> {
   const params: DocumentClient.BatchWriteItemInput = {
     RequestItems: {
-      [tableName]: items.map(item => ({
+      [tableName]: items.map((item) => ({
         PutRequest: {
-          Item: item
-        }
-      }))
-    }
+          Item: item,
+        },
+      })),
+    },
   };
 
   return batchWrite(params);

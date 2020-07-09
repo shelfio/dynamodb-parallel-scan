@@ -12,7 +12,7 @@ describe('parallelScan', () => {
     {id: 'some-file-id-7'},
     {id: 'some-file-id-8'},
     {id: 'some-file-id-9', fileSize: 300},
-    {id: 'some-file-id-10'}
+    {id: 'some-file-id-10'},
   ];
 
   beforeAll(async () => {
@@ -25,8 +25,8 @@ describe('parallelScan', () => {
         TableName: 'files',
         FilterExpression: 'attribute_exists(#id)',
         ExpressionAttributeNames: {
-          '#id': 'id'
-        }
+          '#id': 'id',
+        },
       },
       {concurrency: 1}
     );
@@ -44,8 +44,8 @@ describe('parallelScan', () => {
         TableName: 'files',
         FilterExpression: 'attribute_exists(#id)',
         ExpressionAttributeNames: {
-          '#id': 'id'
-        }
+          '#id': 'id',
+        },
       },
       {concurrency: 1}
     );
@@ -63,8 +63,8 @@ describe('parallelScan', () => {
         TableName: 'files',
         FilterExpression: 'attribute_exists(#fileSize)',
         ExpressionAttributeNames: {
-          '#fileSize': 'fileSize'
-        }
+          '#fileSize': 'fileSize',
+        },
       },
       {concurrency: 1}
     );
