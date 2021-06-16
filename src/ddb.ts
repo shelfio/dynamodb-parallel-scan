@@ -16,7 +16,7 @@ export async function scan(params: DocumentClient.ScanInput): Promise<DocumentCl
 export function insertMany({items, tableName}): Promise<DocumentClient.BatchWriteItemOutput> {
   const params: DocumentClient.BatchWriteItemInput = {
     RequestItems: {
-      [tableName]: items.map((item) => ({
+      [tableName]: items.map(item => ({
         PutRequest: {
           Item: item,
         },
