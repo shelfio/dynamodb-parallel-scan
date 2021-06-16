@@ -18,7 +18,7 @@ jobs:
   build:
     executor:
       name: node/default
-      tag: '12-browsers'
+      tag: '14-browsers'
     steps:
       - checkout
       - install_deps
