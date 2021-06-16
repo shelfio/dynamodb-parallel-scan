@@ -1,5 +1,6 @@
 import DynamoDB from 'aws-sdk/clients/dynamodb';
 import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
+import {InsertManyParams} from './ddb.types';
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -13,7 +14,10 @@ export async function scan(params: DocumentClient.ScanInput): Promise<DocumentCl
   return documentClient.scan(params).promise();
 }
 
-export function insertMany({items, tableName}): Promise<DocumentClient.BatchWriteItemOutput> {
+export function insertMany({
+  items,
+  tableName,
+}: InsertManyParams): Promise<DocumentClient.BatchWriteItemOutput> {
   const params: DocumentClient.BatchWriteItemInput = {
     RequestItems: {
       [tableName]: items.map(item => ({
@@ -27,6 +31,8 @@ export function insertMany({items, tableName}): Promise<DocumentClient.BatchWrit
   return batchWrite(params);
 }
 
-async function batchWrite(items): Promise<DocumentClient.BatchWriteItemOutput> {
+async function batchWrite(
+  items: DocumentClient.BatchWriteItemInput
+): Promise<DocumentClient.BatchWriteItemOutput> {
   return documentClient.batchWrite(items).promise();
 }
