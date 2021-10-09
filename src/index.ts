@@ -1,4 +1,3 @@
-import pMap from 'p-map';
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import Debug from 'debug';
@@ -16,15 +15,17 @@ export async function parallelScan(
 
   debug(`Started parallel scan with ${concurrency} threads`);
 
-  await pMap(segments, async (_, segmentIndex) => {
-    const segmentItems = await getItemsFromSegment(scanParams, {
-      concurrency,
-      segmentIndex,
-      totalItemsLength: totalItems.length,
-    });
+  await Promise.all(
+    segments.map(async (_, segmentIndex) => {
+      const segmentItems = await getItemsFromSegment(scanParams, {
+        concurrency,
+        segmentIndex,
+        totalItemsLength: totalItems.length,
+      });
 
-    totalItems.push(...segmentItems);
-  });
+      totalItems.push(...segmentItems);
+    })
+  );
 
   debug(`Finished parallel scan with ${concurrency} threads. Fetched ${totalItems.length} items`);
 
