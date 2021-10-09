@@ -7,3 +7,4 @@ temp
 yarn.lock
 *.log
 .DS_Store
+!.husky/_/husky.sh

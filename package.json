@@ -29,12 +29,6 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "lint-staged",
-      "post-commit": "git update-index --again"
-    }
-  },
   "lint-staged": {
     "*.{html,json,md,yml}": [
       "prettier --write --ignore-path=./.eslintignore",
@@ -71,7 +65,7 @@
     "@types/p-map": "2.0.0",
     "aws-sdk": "2.631.0",
     "eslint": "7.6.0",
-    "husky": "4.2.5",
+    "husky": "7.0.2",
     "jest": "27.0.4",
     "lint-staged": "10.2.11",
     "prettier": "2.0.5",
