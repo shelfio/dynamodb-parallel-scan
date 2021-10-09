@@ -14,11 +14,11 @@
     "email": "vlad@shelf.io",
     "url": "shelf.io"
   },
-  "main": "lib/index.js",
-  "types": "lib/index.d.ts",
   "files": [
     "lib"
   ],
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
   "scripts": {
     "build": "rm -rf lib/ && yarn build:types && babel src --out-dir lib --ignore '**/*.test.ts' --extensions '.ts'",
     "build:types": "tsc --emitDeclarationOnly --declaration --isolatedModules false --declarationDir lib",
@@ -44,32 +44,32 @@
   },
   "prettier": "@shelf/prettier-config",
   "dependencies": {
-    "debug": "4.1.1",
+    "debug": "4.3.2",
     "lodash.clonedeep": "4.5.0",
     "lodash.times": "4.3.2",
     "p-map": "4.0.0"
   },
   "devDependencies": {
-    "@babel/cli": "7.10.5",
-    "@babel/core": "7.11.1",
+    "@babel/cli": "7.15.7",
+    "@babel/core": "7.15.8",
     "@shelf/babel-config": "0.1.4",
-    "@shelf/eslint-config": "1.2.0",
+    "@shelf/eslint-config": "2.0.0",
     "@shelf/jest-dynamodb": "1.7.0",
     "@shelf/prettier-config": "1.0.0",
     "@shelf/tsconfig": "0.0.6",
-    "@types/debug": "4.1.5",
-    "@types/jest": "26.0.9",
+    "@types/debug": "4.1.7",
+    "@types/jest": "27.0.2",
     "@types/lodash.clonedeep": "4.5.6",
     "@types/lodash.times": "4.3.6",
-    "@types/node": "12",
+    "@types/node": "14",
     "@types/p-map": "2.0.0",
     "aws-sdk": "2.631.0",
-    "eslint": "7.6.0",
+    "eslint": "7.32.0",
     "husky": "7.0.2",
-    "jest": "27.0.4",
-    "lint-staged": "10.2.11",
-    "prettier": "2.0.5",
-    "typescript": "3.9.7"
+    "jest": "27.2.5",
+    "lint-staged": "11.2.1",
+    "prettier": "2.4.1",
+    "typescript": "4.4.3"
   },
   "peerDependencies": {
     "aws-sdk": "2.x.x"
