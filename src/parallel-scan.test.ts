@@ -1,5 +1,5 @@
 import {insertMany} from './ddb';
-import {parallelScan} from './';
+import {parallelScan} from './parallel-scan';
 
 describe('parallelScan', () => {
   const files = [
