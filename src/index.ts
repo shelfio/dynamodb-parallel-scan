@@ -12,41 +12,61 @@ export async function parallelScan(
   {concurrency}: {concurrency: number}
 ): Promise<DocumentClient.ItemList> {
   const segments: number[] = times(concurrency);
-  const docs: DocumentClient.ItemList = [];
+  const totalItems: DocumentClient.ItemList = [];
 
   debug(`Started parallel scan with ${concurrency} threads`);
 
   await pMap(segments, async (_, segmentIndex) => {
-    let ExclusiveStartKey: DocumentClient.Key;
+    const segmentItems = await getItemsFromSegment(scanParams, {
+      concurrency,
+      segmentIndex,
+      totalItemsLength: totalItems.length,
+    });
 
-    const params: DocumentClient.ScanInput = {
-      ...cloneDeep(scanParams),
-      Segment: segmentIndex,
-      TotalSegments: concurrency,
-    };
-
-    const now: number = Date.now();
-    debug(`[${segmentIndex}/${concurrency}][start]`, {ExclusiveStartKey});
-
-    do {
-      if (ExclusiveStartKey) {
-        params.ExclusiveStartKey = ExclusiveStartKey;
-      }
-
-      const {Items, LastEvaluatedKey} = await scan(params);
-      ExclusiveStartKey = LastEvaluatedKey;
-
-      docs.push(...Items);
-
-      debug(
-        `[${segmentIndex}/${concurrency}][done][time:${Date.now() - now}ms]` +
-          `[fetched:${Items.length}][total:${docs.length}]`,
-        {ExclusiveStartKey}
-      );
-    } while (ExclusiveStartKey);
+    totalItems.push(...segmentItems);
   });
 
-  debug(`Finished parallel scan with ${concurrency} threads. Fetched ${docs.length} items`);
+  debug(`Finished parallel scan with ${concurrency} threads. Fetched ${totalItems.length} items`);
 
-  return docs;
+  return totalItems;
+}
+
+async function getItemsFromSegment(
+  scanParams: DocumentClient.ScanInput,
+  {
+    concurrency,
+    segmentIndex,
+    totalItemsLength,
+  }: {concurrency: number; segmentIndex: number; totalItemsLength: number}
+): Promise<DocumentClient.ItemList> {
+  const segmentItems: DocumentClient.ItemList = [];
+  let ExclusiveStartKey: DocumentClient.Key;
+
+  const params: DocumentClient.ScanInput = {
+    ...cloneDeep(scanParams),
+    Segment: segmentIndex,
+    TotalSegments: concurrency,
+  };
+
+  const now: number = Date.now();
+  debug(`[${segmentIndex}/${concurrency}][start]`, {ExclusiveStartKey});
+
+  do {
+    if (ExclusiveStartKey) {
+      params.ExclusiveStartKey = ExclusiveStartKey;
+    }
+
+    const {Items, LastEvaluatedKey} = await scan(params);
+    ExclusiveStartKey = LastEvaluatedKey;
+
+    segmentItems.push(...Items);
+
+    debug(
+      `[${segmentIndex}/${concurrency}][done][time:${Date.now() - now}ms]` +
+        `[fetched:${Items.length}][total:${totalItemsLength}]`,
+      {ExclusiveStartKey}
+    );
+  } while (ExclusiveStartKey);
+
+  return segmentItems;
 }
