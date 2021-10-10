@@ -16,7 +16,7 @@ export async function parallelScanAsStream(
 
   const stream = new Readable({
     objectMode: true,
-    highWaterMark: chunkSize,
+    highWaterMark: 1000, // TODO implement backpressure
     read() {
       return;
     },
