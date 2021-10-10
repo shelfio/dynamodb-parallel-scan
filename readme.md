@@ -10,6 +10,8 @@ $ yarn add @shelf/dynamodb-parallel-scan
 
 ## Usage
 
+### Fetch everything at once
+
 ```js
 const {parallelScan} = require('@shelf/dynamodb-parallel-scan');
 
@@ -19,14 +21,40 @@ const {parallelScan} = require('@shelf/dynamodb-parallel-scan');
       TableName: 'files',
       FilterExpression: 'attribute_exists(#fileSize)',
       ExpressionAttributeNames: {
-        '#fileSize': 'fileSize'
+        '#fileSize': 'fileSize',
       },
-      ProjectionExpression: 'fileSize'
+      ProjectionExpression: 'fileSize',
     },
     {concurrency: 1000}
   );
 
   console.log(items);
+})();
+```
+
+### Use as async generator (or streams)
+
+Note: this stream doesn't implement backpressure mechanism just yet, so memory overflow could happen if you don't consume stream fast enough.
+
+```js
+const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
+
+(async () => {
+  const stream = await parallelScanAsStream(
+    {
+      TableName: 'files',
+      FilterExpression: 'attribute_exists(#fileSize)',
+      ExpressionAttributeNames: {
+        '#fileSize': 'fileSize',
+      },
+      ProjectionExpression: 'fileSize',
+    },
+    {concurrency: 1000, chunkSize: 10000}
+  );
+
+  for await (const items of stream) {
+    console.log(items); // 10k items here
+  }
 })();
 ```
 
