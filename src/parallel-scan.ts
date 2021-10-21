@@ -8,6 +8,7 @@ const debug = Debug('ddb-parallel-scan');
 
 let totalTableItemsCount = 0;
 let totalScannedItemsCount = 0;
+let totalFetchedItemsCount = 0;
 
 export async function parallelScan(
   scanParams: DocumentClient.ScanInput,
@@ -27,10 +28,10 @@ export async function parallelScan(
       const segmentItems = await getItemsFromSegment(scanParams, {
         concurrency,
         segmentIndex,
-        totalItemsLength: totalItems.length,
       });
 
       totalItems.push(...segmentItems);
+      totalFetchedItemsCount += segmentItems.length;
     })
   );
 
@@ -41,11 +42,7 @@ export async function parallelScan(
 
 async function getItemsFromSegment(
   scanParams: DocumentClient.ScanInput,
-  {
-    concurrency,
-    segmentIndex,
-    totalItemsLength,
-  }: {concurrency: number; segmentIndex: number; totalItemsLength: number}
+  {concurrency, segmentIndex}: {concurrency: number; segmentIndex: number}
 ): Promise<DocumentClient.ItemList> {
   const segmentItems: DocumentClient.ItemList = [];
   let ExclusiveStartKey: DocumentClient.Key;
@@ -75,7 +72,7 @@ async function getItemsFromSegment(
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
         `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
         `[fetched:${Items.length}] ` +
-        `[total (fetched/scanned/table-size):${totalItemsLength}/${totalScannedItemsCount}/${totalTableItemsCount}]`
+        `[total (fetched/scanned/table-size):${totalFetchedItemsCount}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
   } while (ExclusiveStartKey);
 

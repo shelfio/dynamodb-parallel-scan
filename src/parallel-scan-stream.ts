@@ -10,6 +10,7 @@ const debug = Debug('ddb-parallel-scan');
 
 let totalTableItemsCount = 0;
 let totalScannedItemsCount = 0;
+let totalFetchedItemsCount = 0;
 
 export async function parallelScanAsStream(
   scanParams: DocumentClient.ScanInput,
@@ -18,7 +19,6 @@ export async function parallelScanAsStream(
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
 
   const segments: number[] = times(concurrency);
-  const totalItemsLength = 0;
 
   const stream = new Readable({
     objectMode: true,
@@ -40,7 +40,6 @@ export async function parallelScanAsStream(
         concurrency,
         segmentIndex,
         chunkSize,
-        totalItemsLength,
       });
     })
   ).then(() => {
@@ -57,14 +56,12 @@ async function getItemsFromSegment({
   concurrency,
   segmentIndex,
   chunkSize,
-  totalItemsLength,
 }: {
   scanParams: DocumentClient.ScanInput;
   stream: Readable;
   concurrency: number;
   segmentIndex: number;
   chunkSize: number;
-  totalItemsLength: number;
 }): Promise<void> {
   let segmentItems: DocumentClient.ItemList = [];
   let ExclusiveStartKey: DocumentClient.Key;
@@ -88,13 +85,11 @@ async function getItemsFromSegment({
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount;
 
-    totalItemsLength += Items.length;
-
     debug(
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
         `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
         `[fetched:${Items.length}] ` +
-        `[total (fetched/scanned/table-size):${totalItemsLength}/${totalScannedItemsCount}/${totalTableItemsCount}]`
+        `[total (fetched/scanned/table-size):${totalFetchedItemsCount}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
 
     segmentItems.push(...Items);
@@ -105,6 +100,7 @@ async function getItemsFromSegment({
 
     for (const itemsOfChunkSize of chunk(segmentItems, chunkSize)) {
       stream.push(itemsOfChunkSize);
+      totalFetchedItemsCount += itemsOfChunkSize.length;
     }
 
     segmentItems = [];
@@ -112,5 +108,6 @@ async function getItemsFromSegment({
 
   if (segmentItems.length) {
     stream.push(segmentItems);
+    totalFetchedItemsCount += segmentItems.length;
   }
 }
