@@ -1,5 +1,6 @@
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
+import chunk from 'lodash.chunk';
 import Debug from 'debug';
 import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 import {Readable} from 'stream';
@@ -103,8 +104,8 @@ async function getItemsFromSegment({
       continue;
     }
 
-    for (let i = 0; i < segmentItems.length; i += chunkSize) {
-      stream.push(segmentItems.slice(i, i + chunkSize));
+    for (const itemsOfChunkSize of chunk(segmentItems, chunkSize)) {
+      stream.push(itemsOfChunkSize);
     }
 
     segmentItems = [];
