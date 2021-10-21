@@ -94,8 +94,7 @@ async function getItemsFromSegment({
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
         `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
         `[fetched:${Items.length}] ` +
-        `[total (fetched/scanned/table-size):${totalItemsLength}/${totalScannedItemsCount}/${totalTableItemsCount}]`,
-      {ExclusiveStartKey}
+        `[total (fetched/scanned/table-size):${totalItemsLength}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
 
     segmentItems.push(...Items);
