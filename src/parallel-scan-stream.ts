@@ -3,7 +3,7 @@ import times from 'lodash.times';
 import Debug from 'debug';
 import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 import {Readable} from 'stream';
-import {scan} from './ddb';
+import {getTableItemsCount, scan} from './ddb';
 
 const debug = Debug('ddb-parallel-scan');
 
@@ -11,6 +11,8 @@ export async function parallelScanAsStream(
   scanParams: DocumentClient.ScanInput,
   {concurrency, chunkSize}: {concurrency: number; chunkSize: number}
 ): Promise<Readable> {
+  const totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
+
   const segments: number[] = times(concurrency);
   const totalItemsLength = 0;
 
@@ -22,7 +24,9 @@ export async function parallelScanAsStream(
     },
   });
 
-  debug(`Started parallel scan with ${concurrency} threads`);
+  debug(
+    `Started parallel scan with ${concurrency} threads. Total items count: ${totalTableItemsCount}`
+  );
 
   Promise.all(
     segments.map(async (_, segmentIndex) => {

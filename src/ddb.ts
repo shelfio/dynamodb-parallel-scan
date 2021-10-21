@@ -9,9 +9,16 @@ const config = {
 };
 
 const documentClient: DocumentClient = new DynamoDB.DocumentClient(config);
+const ddbClient = new DynamoDB(config);
 
 export async function scan(params: DocumentClient.ScanInput): Promise<DocumentClient.ScanOutput> {
   return documentClient.scan(params).promise();
+}
+
+export async function getTableItemsCount(tableName: string): Promise<number> {
+  const tableInfo = await ddbClient.describeTable({TableName: tableName}).promise();
+
+  return tableInfo.Table.ItemCount;
 }
 
 export function insertMany({
