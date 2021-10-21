@@ -7,6 +7,7 @@ import {getTableItemsCount, scan} from './ddb';
 const debug = Debug('ddb-parallel-scan');
 
 let totalTableItemsCount = 0;
+let totalScannedItemsCount = 0;
 
 export async function parallelScan(
   scanParams: DocumentClient.ScanInput,
@@ -64,14 +65,17 @@ async function getItemsFromSegment(
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey} = await scan(params);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params);
     ExclusiveStartKey = LastEvaluatedKey;
+    totalScannedItemsCount += ScannedCount;
 
     segmentItems.push(...Items);
 
     debug(
-      `[${segmentIndex}/${concurrency}][done][time:${Date.now() - now}ms]` +
-        `[fetched:${Items.length}][total:${totalItemsLength}]`,
+      `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
+        `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
+        `[fetched:${Items.length}] ` +
+        `[total (fetched/scanned/table-size):${totalItemsLength}/${totalScannedItemsCount}/${totalTableItemsCount}]`,
       {ExclusiveStartKey}
     );
   } while (ExclusiveStartKey);
