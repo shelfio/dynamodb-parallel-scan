@@ -67,10 +67,11 @@ async function getItemsFromSegment({
     TotalSegments: concurrency,
   };
 
-  const now: number = Date.now();
   debug(`[${segmentIndex}/${concurrency}][start]`, {ExclusiveStartKey});
 
   do {
+    const now: number = Date.now();
+
     if (ExclusiveStartKey) {
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
