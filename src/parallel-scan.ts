@@ -6,11 +6,13 @@ import {getTableItemsCount, scan} from './ddb';
 
 const debug = Debug('ddb-parallel-scan');
 
+let totalTableItemsCount = 0;
+
 export async function parallelScan(
   scanParams: DocumentClient.ScanInput,
   {concurrency}: {concurrency: number}
 ): Promise<DocumentClient.ItemList> {
-  const totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
 
   const segments: number[] = times(concurrency);
   const totalItems: DocumentClient.ItemList = [];
