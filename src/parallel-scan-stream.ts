@@ -92,7 +92,7 @@ async function getItemsFromSegment({
         `[total (fetched/scanned/table-size):${totalFetchedItemsCount}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
 
-    segmentItems.push(...Items);
+    segmentItems = segmentItems.concat(Items);
 
     if (segmentItems.length < chunkSize) {
       continue;
