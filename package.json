@@ -53,8 +53,8 @@
   },
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "3.36.0",
-    "@babel/cli": "7.15.7",
-    "@babel/core": "7.15.8",
+    "@babel/cli": "7.17.3",
+    "@babel/core": "7.17.5",
     "@shelf/babel-config": "0.1.4",
     "@shelf/eslint-config": "2.0.0",
     "@shelf/jest-dynamodb": "2.1.0",
