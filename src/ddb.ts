@@ -1,6 +1,6 @@
 import DynamoDB from 'aws-sdk/clients/dynamodb';
-import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
-import {InsertManyParams} from './ddb.types';
+import type {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
+import type {InsertManyParams} from './ddb.types';
 
 const isTest = process.env.JEST_WORKER_ID;
 const config = {
@@ -27,11 +27,13 @@ export function insertMany({
 }: InsertManyParams): Promise<DocumentClient.BatchWriteItemOutput> {
   const params: DocumentClient.BatchWriteItemInput = {
     RequestItems: {
-      [tableName]: items.map(item => ({
-        PutRequest: {
-          Item: item,
-        },
-      })),
+      [tableName]: items.map(item => {
+        return {
+          PutRequest: {
+            Item: item,
+          },
+        };
+      }),
     },
   };
 

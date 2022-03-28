@@ -1,10 +1,10 @@
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
-import Debug from 'debug';
-import {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
+import getDebugger from 'debug';
+import type {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 import {getTableItemsCount, scan} from './ddb';
 
-const debug = Debug('ddb-parallel-scan');
+const debug = getDebugger('ddb-parallel-scan');
 
 let totalTableItemsCount = 0;
 let totalScannedItemsCount = 0;
