@@ -26,7 +26,7 @@
     "lint": "eslint . --ext .js,.ts,.json --fix --quiet",
     "lint:ci": "eslint . --ext .js,.ts,.json --quiet",
     "prepack": "yarn build",
-    "test": "export ENVIRONMENT=local && jest src --runInBand",
+    "test": "export ENVIRONMENT=local && jest src --runInBand --forceExit",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch"
   },
