@@ -34,7 +34,7 @@ const {parallelScan} = require('@shelf/dynamodb-parallel-scan');
 
 ### Use as async generator (or streams)
 
-Note: this stream doesn't implement backpressure mechanism just yet, so memory overflow could happen if you don't consume stream fast enough.
+Note: `highWaterMark` determines items count threshold, so Parallel Scan can fetch `concurrency` \* 1MB more data even after highWaterMark was reached.
 
 ```js
 const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
@@ -49,7 +49,7 @@ const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
       },
       ProjectionExpression: 'fileSize',
     },
-    {concurrency: 1000, chunkSize: 10000}
+    {concurrency: 1000, chunkSize: 10000, highWaterMark: 10000}
   );
 
   for await (const items of stream) {
