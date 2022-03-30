@@ -18,7 +18,7 @@ export async function parallelScanAsStream(
   {
     concurrency,
     chunkSize,
-    highWaterMark = 1000,
+    highWaterMark = Number.MAX_SAFE_INTEGER,
   }: {concurrency: number; chunkSize: number; highWaterMark?: number}
 ): Promise<Readable> {
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
