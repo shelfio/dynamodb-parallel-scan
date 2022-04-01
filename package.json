@@ -26,7 +26,7 @@
     "lint": "eslint . --ext .js,.ts,.json --fix --quiet",
     "lint:ci": "eslint . --ext .js,.ts,.json --quiet",
     "prepack": "yarn build",
-    "test": "export ENVIRONMENT=local && jest src --runInBand",
+    "test": "export ENVIRONMENT=local && jest src --runInBand --forceExit",
     "type-check": "tsc --noEmit",
     "type-check:watch": "npm run type-check -- --watch"
   },
@@ -56,7 +56,7 @@
     "@babel/cli": "7.17.6",
     "@babel/core": "7.17.5",
     "@shelf/babel-config": "0.1.8",
-    "@shelf/eslint-config": "2.0.0",
+    "@shelf/eslint-config": "2.16.0",
     "@shelf/jest-dynamodb": "2.1.0",
     "@shelf/prettier-config": "1.0.0",
     "@shelf/tsconfig": "0.0.6",
