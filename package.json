@@ -32,12 +32,10 @@
   },
   "lint-staged": {
     "*.{html,json,md,yml}": [
-      "prettier --write --ignore-path=./.eslintignore",
-      "git add"
+      "prettier --write --ignore-path=./.eslintignore"
     ],
     "*.{ts,js}": [
-      "eslint --fix",
-      "git add"
+      "eslint --fix"
     ]
   },
   "babel": {
