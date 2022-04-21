@@ -15,6 +15,16 @@ This library has 2 peer dependencies:
 
 Make sure to install them alongside this library.
 
+## Why this is better than a regular scan
+
+**Easily parallelize** scan requests to fetch all items from a table at once.
+This is useful when you need to scan a large table to find a small number of items that will fit the node.js memory.
+
+**Scan huge tables using async generator** or stream.
+And yes, it supports streams backpressure!
+Useful when you need to process a large number of items while you scan them.
+It allows receiving chunks of scanned items, wait until you process them, and then resume scanning when you're ready.
+
 ## Usage
 
 ### Fetch everything at once
