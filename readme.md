@@ -78,7 +78,7 @@ const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
 $ git checkout master
 $ yarn version
 $ yarn publish
-$ git push origin master
+$ git push origin master --tags
 ```
 
 ## License
