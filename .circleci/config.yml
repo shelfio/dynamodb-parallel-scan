@@ -19,6 +19,9 @@ jobs:
     executor:
       name: node/default
       tag: '14-browsers'
+    environment:
+      AWS_ACCESS_KEY_ID: 'fakeMyKeyId'
+      AWS_SECRET_ACCESS_KEY: 'fakeMySecretKey'
     steps:
       - checkout
       - install_deps
