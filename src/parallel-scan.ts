@@ -1,7 +1,7 @@
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import getDebugger from 'debug';
-import type {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
+import type {ScanCommandInput, ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import {getTableItemsCount, scan} from './ddb';
 
 const debug = getDebugger('ddb-parallel-scan');
@@ -11,13 +11,13 @@ let totalScannedItemsCount = 0;
 let totalFetchedItemsCount = 0;
 
 export async function parallelScan(
-  scanParams: DocumentClient.ScanInput,
+  scanParams: ScanCommandInput,
   {concurrency}: {concurrency: number}
-): Promise<DocumentClient.ItemList> {
+): Promise<ScanCommandOutput['Items']> {
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
 
   const segments: number[] = times(concurrency);
-  const totalItems: DocumentClient.ItemList = [];
+  const totalItems: ScanCommandOutput['Items'] = [];
 
   debug(
     `Started parallel scan with ${concurrency} threads. Total items count: ${totalTableItemsCount}`
@@ -41,13 +41,13 @@ export async function parallelScan(
 }
 
 async function getItemsFromSegment(
-  scanParams: DocumentClient.ScanInput,
+  scanParams: ScanCommandInput,
   {concurrency, segmentIndex}: {concurrency: number; segmentIndex: number}
-): Promise<DocumentClient.ItemList> {
-  const segmentItems: DocumentClient.ItemList = [];
-  let ExclusiveStartKey: DocumentClient.Key;
+): Promise<ScanCommandOutput['Items']> {
+  const segmentItems: ScanCommandOutput['Items'] = [];
+  let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
 
-  const params: DocumentClient.ScanInput = {
+  const params: ScanCommandInput = {
     ...cloneDeep(scanParams),
     Segment: segmentIndex,
     TotalSegments: concurrency,

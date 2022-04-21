@@ -2,8 +2,9 @@ import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import chunk from 'lodash.chunk';
 import getDebugger from 'debug';
-import type {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
 import {Readable} from 'stream';
+import type {ScanCommandInput} from '@aws-sdk/lib-dynamodb';
+import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import {getTableItemsCount, scan} from './ddb';
 import {Blocker} from './blocker';
 
@@ -14,7 +15,7 @@ let totalScannedItemsCount = 0;
 let totalFetchedItemsCount = 0;
 
 export async function parallelScanAsStream(
-  scanParams: DocumentClient.ScanInput,
+  scanParams: ScanCommandInput,
   {
     concurrency,
     chunkSize,
@@ -70,17 +71,17 @@ async function getItemsFromSegment({
   chunkSize,
   blocker,
 }: {
-  scanParams: DocumentClient.ScanInput;
+  scanParams: ScanCommandInput;
   stream: Readable;
   concurrency: number;
   segmentIndex: number;
   chunkSize: number;
   blocker: Blocker;
 }): Promise<void> {
-  let segmentItems: DocumentClient.ItemList = [];
-  let ExclusiveStartKey: DocumentClient.Key;
+  let segmentItems: ScanCommandOutput['Items'] = [];
+  let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
 
-  const params: DocumentClient.ScanInput = {
+  const params: ScanCommandInput = {
     ...cloneDeep(scanParams),
     Segment: segmentIndex,
     TotalSegments: concurrency,

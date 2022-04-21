@@ -1,29 +1,29 @@
-import DynamoDB from 'aws-sdk/clients/dynamodb';
-import type {DocumentClient} from 'aws-sdk/lib/dynamodb/document_client';
-import {DynamoDBClient} from '@aws-sdk/client-dynamodb';
-import type {BatchWriteCommandInput, BatchWriteCommandOutput} from '@aws-sdk/lib-dynamodb';
-import {BatchWriteCommand, DynamoDBDocumentClient} from '@aws-sdk/lib-dynamodb';
+import {DescribeTableCommand, DynamoDBClient} from '@aws-sdk/client-dynamodb';
+import type {
+  BatchWriteCommandInput,
+  BatchWriteCommandOutput,
+  ScanCommandInput,
+  ScanCommandOutput,
+} from '@aws-sdk/lib-dynamodb';
+import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/lib-dynamodb';
 
 const isTest = process.env.JEST_WORKER_ID;
-const config = {
-  ...(isTest && {endpoint: 'localhost:8000', sslEnabled: false, region: 'local-env'}),
-};
-
-const documentClient: DocumentClient = new DynamoDB.DocumentClient(config);
-const ddbClient = new DynamoDB(config);
 const ddbv3Client = new DynamoDBClient({
   ...(isTest && {endpoint: 'http://localhost:8000', tls: false, region: 'local-env'}),
 });
 const ddbv3DocClient = DynamoDBDocumentClient.from(ddbv3Client);
 
-export async function scan(params: DocumentClient.ScanInput): Promise<DocumentClient.ScanOutput> {
-  return documentClient.scan(params).promise();
+export async function scan(params: ScanCommandInput): Promise<ScanCommandOutput> {
+  const command = new ScanCommand(params);
+
+  return ddbv3Client.send(command);
 }
 
 export async function getTableItemsCount(tableName: string): Promise<number> {
-  const tableInfo = await ddbClient.describeTable({TableName: tableName}).promise();
+  const command = new DescribeTableCommand({TableName: tableName});
+  const resp = await ddbv3Client.send(command);
 
-  return tableInfo.Table.ItemCount;
+  return resp.Table.ItemCount;
 }
 
 export function insertMany({
