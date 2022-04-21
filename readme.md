@@ -8,6 +8,13 @@
 $ yarn add @shelf/dynamodb-parallel-scan
 ```
 
+This library has 2 peer dependencies:
+
+- `@aws-sdk/client-dynamodb`
+- `@aws-sdk/lib-dynamodb`
+
+Make sure to install them alongside this library.
+
 ## Usage
 
 ### Fetch everything at once
