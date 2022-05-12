@@ -60,7 +60,7 @@
     "@shelf/prettier-config": "1.0.0",
     "@shelf/tsconfig": "0.0.6",
     "@types/debug": "4.1.7",
-    "@types/jest": "27.5.0",
+    "@types/jest": "27.5.1",
     "@types/lodash.chunk": "4.2.7",
     "@types/lodash.clonedeep": "4.5.7",
     "@types/lodash.times": "4.3.7",
