@@ -45,7 +45,7 @@ export async function parallelScanAsStream(
   );
 
   Promise.all(
-    segments.map(async (_, segmentIndex) =>
+    segments.map((_, segmentIndex) =>
       getItemsFromSegment({
         scanParams,
         stream,

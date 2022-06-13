@@ -21,7 +21,7 @@ const ddbv3Client = new DynamoDBClient({
 });
 const ddbv3DocClient = DynamoDBDocumentClient.from(ddbv3Client);
 
-export async function scan(params: ScanCommandInput): Promise<ScanCommandOutput> {
+export function scan(params: ScanCommandInput): Promise<ScanCommandOutput> {
   const command = new ScanCommand(params);
 
   return ddbv3Client.send(command);
@@ -54,7 +54,7 @@ export function insertMany({
   return batchWrite(params);
 }
 
-async function batchWrite(
+function batchWrite(
   items: BatchWriteCommandInput['RequestItems']
 ): Promise<BatchWriteCommandOutput> {
   const command = new BatchWriteCommand({

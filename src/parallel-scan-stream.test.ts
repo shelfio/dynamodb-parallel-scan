@@ -4,7 +4,7 @@ import {uniq} from 'lodash';
 import * as ddbHelpers from './ddb';
 import {parallelScanAsStream} from './parallel-scan-stream';
 
-async function delay(ms: number) {
+function delay(ms: number) {
   return new Promise(r => {
     setTimeout(r, ms);
   });
