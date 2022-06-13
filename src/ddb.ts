@@ -9,7 +9,15 @@ import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/l
 
 const isTest = process.env.JEST_WORKER_ID;
 const ddbv3Client = new DynamoDBClient({
-  ...(isTest && {endpoint: 'http://localhost:8000', tls: false, region: 'local-env'}),
+  ...(isTest && {
+    endpoint: 'http://localhost:8000',
+    tls: false,
+    region: 'local-env',
+    credentials: {
+      accessKeyId: 'fakeMyKeyId',
+      secretAccessKey: 'fakeSecretAccessKey',
+    },
+  }),
 });
 const ddbv3DocClient = DynamoDBDocumentClient.from(ddbv3Client);
 
