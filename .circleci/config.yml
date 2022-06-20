@@ -1,27 +1,33 @@
+orbs:
+  node: circleci/node@5.0.2
+  aws-cli: circleci/aws-cli@3.1.1
+
 version: 2.1
 
-orbs:
-  node: circleci/node@1.1.6
+parameters:
+  node_version:
+    type: string
+    default: '16.5.0-browsers'
 
 commands:
   install_deps:
     steps:
-      - node/with-cache:
+      - node/install-packages:
+          pkg-manager: yarn
           cache-version: v1-all
-          cache-key: yarn.lock
-          dir: ~/repo/node_modules
-          use-strict-cache: true
-          steps:
-            - run: yarn install --pure-lockfile --no-progress
+          cache-only-lockfile: true
+          app-dir: ~/repo
+          override-ci-command: yarn install --pure-lockfile --no-progress
 
 jobs:
   build:
     executor:
       name: node/default
-      tag: '14-browsers'
+      tag: << pipeline.parameters.node_version >>
     environment:
       AWS_ACCESS_KEY_ID: 'fakeMyKeyId'
       AWS_SECRET_ACCESS_KEY: 'fakeMySecretKey'
+    working_directory: ~/repo
     steps:
       - checkout
       - install_deps
