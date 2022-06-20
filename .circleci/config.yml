@@ -7,7 +7,7 @@ version: 2.1
 parameters:
   node_version:
     type: string
-    default: '16.5.0-browsers'
+    default: '16.15.1-browsers'
 
 commands:
   install_deps:
