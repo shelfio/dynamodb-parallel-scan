@@ -43,13 +43,13 @@
   },
   "prettier": "@shelf/prettier-config",
   "dependencies": {
+    "@aws-sdk/client-dynamodb": "3.113.0",
+    "@aws-sdk/lib-dynamodb": "3.113.0",
     "debug": "4.3.4",
     "lodash.chunk": "4.2.0",
     "lodash.clonedeep": "4.5.0",
     "lodash.times": "4.3.2",
-    "p-map": "4.0.0",
-    "@aws-sdk/client-dynamodb": "3.113.0",
-    "@aws-sdk/lib-dynamodb": "3.113.0"
+    "p-map": "4.0.0"
   },
   "devDependencies": {
     "@babel/cli": "7.17.10",
