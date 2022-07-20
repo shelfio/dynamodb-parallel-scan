@@ -54,7 +54,7 @@
     "@aws-sdk/lib-dynamodb": "3.113.0",
     "@babel/cli": "7.18.6",
     "@babel/core": "7.18.6",
-    "@shelf/babel-config": "0.1.8",
+    "@shelf/babel-config": "1.0.2",
     "@shelf/eslint-config": "2.18.0",
     "@shelf/jest-dynamodb": "3.1.2",
     "@shelf/prettier-config": "1.0.0",
@@ -64,7 +64,7 @@
     "@types/lodash.chunk": "4.2.7",
     "@types/lodash.clonedeep": "4.5.7",
     "@types/lodash.times": "4.3.7",
-    "@types/node": "14",
+    "@types/node": "16",
     "@types/p-map": "2.0.0",
     "eslint": "8.19.0",
     "husky": "8.0.1",
@@ -78,7 +78,7 @@
     "@aws-sdk/lib-dynamodb": "3.x.x"
   },
   "engines": {
-    "node": ">=14"
+    "node": ">=16"
   },
   "publishConfig": {
     "access": "public"
