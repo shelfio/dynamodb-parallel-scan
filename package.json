@@ -58,7 +58,7 @@
     "@shelf/eslint-config": "2.18.0",
     "@shelf/jest-dynamodb": "3.1.2",
     "@shelf/prettier-config": "1.0.0",
-    "@shelf/tsconfig": "0.0.6",
+    "@shelf/tsconfig": "0.0.9",
     "@types/debug": "4.1.7",
     "@types/jest": "28.1.6",
     "@types/lodash.chunk": "4.2.7",
