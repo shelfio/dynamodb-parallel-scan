@@ -2,6 +2,8 @@
 
 > Scan DynamoDB table concurrently (up to 1,000,000 segments), recursively read all items from every segment
 
+[A blog post going into details about this library.](https://vladholubiev.medium.com/how-to-scan-a-23-gb-dynamodb-table-in-1-minute-110730879e2b)
+
 ## Install
 
 ```
