@@ -67,7 +67,7 @@
     "@types/node": "16",
     "@types/p-map": "2.0.0",
     "eslint": "8.22.0",
-    "husky": "8.0.1",
+    "husky": "8.0.2",
     "jest": "28.1.3",
     "lint-staged": "13.0.3",
     "prettier": "2.7.1",
