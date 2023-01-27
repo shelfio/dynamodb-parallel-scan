@@ -8,11 +8,13 @@ import type {
 import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/lib-dynamodb';
 
 const isTest = process.env.JEST_WORKER_ID;
+const endpoint = process.env.DYNAMODB_ENDPOINT;
+const region = process.env.REGION;
 const ddbv3Client = new DynamoDBClient({
   ...(isTest && {
-    endpoint: 'http://localhost:8000',
+    endpoint: endpoint ?? 'http://localhost:8000',
     tls: false,
-    region: 'local-env',
+    region: region ?? 'local-env',
     credentials: {
       accessKeyId: 'fakeMyKeyId',
       secretAccessKey: 'fakeSecretAccessKey',
