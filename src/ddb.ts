@@ -33,7 +33,7 @@ export async function getTableItemsCount(tableName: string): Promise<number> {
   const command = new DescribeTableCommand({TableName: tableName});
   const resp = await ddbv3Client.send(command);
 
-  return resp.Table.ItemCount;
+  return resp.Table!.ItemCount!;
 }
 
 export function insertMany({

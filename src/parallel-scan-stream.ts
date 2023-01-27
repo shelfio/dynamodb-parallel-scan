@@ -22,7 +22,7 @@ export async function parallelScanAsStream(
     highWaterMark = Number.MAX_SAFE_INTEGER,
   }: {concurrency: number; chunkSize: number; highWaterMark?: number}
 ): Promise<Readable> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!);
 
   const segments: number[] = times(concurrency);
 
@@ -100,16 +100,16 @@ async function getItemsFromSegment({
 
     const {Items, LastEvaluatedKey, ScannedCount} = await scan(params);
     ExclusiveStartKey = LastEvaluatedKey;
-    totalScannedItemsCount += ScannedCount;
+    totalScannedItemsCount += ScannedCount!;
 
     debug(
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
         `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
-        `[fetched:${Items.length}] ` +
+        `[fetched:${Items!.length}] ` +
         `[total (fetched/scanned/table-size):${totalFetchedItemsCount}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
 
-    segmentItems = segmentItems.concat(Items);
+    segmentItems = segmentItems.concat(Items!);
 
     if (segmentItems.length < chunkSize) {
       continue;

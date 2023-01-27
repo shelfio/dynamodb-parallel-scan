@@ -37,7 +37,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(10);
 
-    for (const item of items) {
+    for (const item of items!) {
       expect(files).toContainEqual(item);
     }
   });
@@ -60,7 +60,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(10);
 
-    for (const item of items) {
+    for (const item of items!) {
       expect(files).toContainEqual(item);
     }
   });
@@ -83,7 +83,7 @@ describe('parallelScan', () => {
 
     expect(items).toHaveLength(3);
 
-    for (const item of items) {
+    for (const item of items!) {
       expect(files).toContainEqual(item);
     }
   });
