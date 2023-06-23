@@ -2,8 +2,8 @@ import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import getDebugger from 'debug';
 import type {ScanCommandInput, ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
-import {getTableItemsCount, scan} from './ddb';
 import type {Credentials} from './ddb';
+import {getTableItemsCount, scan} from './ddb';
 
 const debug = getDebugger('ddb-parallel-scan');
 
@@ -27,14 +27,11 @@ export async function parallelScan(
 
   await Promise.all(
     segments.map(async (_, segmentIndex) => {
-      const segmentItems = await getItemsFromSegment(
-        scanParams,
-        {
-          concurrency,
-          segmentIndex,
-        },
-        credentials
-      );
+      const segmentItems = await getItemsFromSegment(scanParams, {
+        concurrency,
+        segmentIndex,
+        credentials,
+      });
 
       totalItems.push(...segmentItems);
       totalFetchedItemsCount += segmentItems.length;
@@ -48,8 +45,11 @@ export async function parallelScan(
 
 async function getItemsFromSegment(
   scanParams: ScanCommandInput,
-  {concurrency, segmentIndex}: {concurrency: number; segmentIndex: number},
-  credentials?: Credentials
+  {
+    concurrency,
+    segmentIndex,
+    credentials,
+  }: {concurrency: number; segmentIndex: number; credentials?: Credentials}
 ): Promise<ScanCommandOutput['Items']> {
   const segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];

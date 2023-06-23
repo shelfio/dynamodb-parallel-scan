@@ -1,11 +1,11 @@
 import {DescribeTableCommand, DynamoDBClient} from '@aws-sdk/client-dynamodb';
+import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/lib-dynamodb';
 import type {
   BatchWriteCommandInput,
   BatchWriteCommandOutput,
   ScanCommandInput,
   ScanCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
-import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/lib-dynamodb';
 
 const isTest = process.env.JEST_WORKER_ID;
 
@@ -20,12 +20,12 @@ const ddbv3Client = (credentials?: Credentials) =>
       endpoint: 'http://localhost:8000',
       tls: false,
       region: 'local-env',
-      credentials: getCredentials(credentials),
     }),
+    credentials: getCredentials(credentials),
   });
 
 const getCredentials = (credentials?: Credentials) => {
-  if (Object.keys(credentials)) {
+  if (credentials && Object.keys(credentials).length) {
     return credentials;
   }
 
@@ -53,7 +53,7 @@ export async function getTableItemsCount(
   const command = new DescribeTableCommand({TableName: tableName});
   const resp = await ddbv3Client(credentials).send(command);
 
-  return resp.Table.ItemCount;
+  return resp?.Table?.ItemCount || 0;
 }
 
 export function insertMany(
