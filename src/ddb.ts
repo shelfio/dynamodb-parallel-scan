@@ -45,6 +45,7 @@ export function scan(
 ): Promise<ScanCommandOutput> {
   const command = new ScanCommand(params);
 
+  // @ts-ignore
   return ddbv3Client(credentials).send(command);
 }
 
@@ -55,7 +56,7 @@ export async function getTableItemsCount(
   const command = new DescribeTableCommand({TableName: tableName});
   const resp = await ddbv3Client(credentials).send(command);
 
-  return resp.Table!.ItemCount;
+  return resp.Table!.ItemCount!;
 }
 
 export function insertMany(
@@ -91,5 +92,6 @@ function batchWrite(
     ReturnItemCollectionMetrics: 'NONE',
   });
 
+  // @ts-ignore
   return ddbv3DocClient(credentials).send(command);
 }
