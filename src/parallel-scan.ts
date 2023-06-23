@@ -3,6 +3,7 @@ import times from 'lodash.times';
 import getDebugger from 'debug';
 import type {ScanCommandInput, ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import {getTableItemsCount, scan} from './ddb';
+import type {Credentials} from './ddb';
 
 const debug = getDebugger('ddb-parallel-scan');
 
@@ -12,9 +13,10 @@ let totalFetchedItemsCount = 0;
 
 export async function parallelScan(
   scanParams: ScanCommandInput,
-  {concurrency}: {concurrency: number}
+  {concurrency}: {concurrency: number},
+  credentials?: Credentials
 ): Promise<ScanCommandOutput['Items']> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName, credentials);
 
   const segments: number[] = times(concurrency);
   const totalItems: ScanCommandOutput['Items'] = [];
@@ -25,10 +27,14 @@ export async function parallelScan(
 
   await Promise.all(
     segments.map(async (_, segmentIndex) => {
-      const segmentItems = await getItemsFromSegment(scanParams, {
-        concurrency,
-        segmentIndex,
-      });
+      const segmentItems = await getItemsFromSegment(
+        scanParams,
+        {
+          concurrency,
+          segmentIndex,
+        },
+        credentials
+      );
 
       totalItems.push(...segmentItems);
       totalFetchedItemsCount += segmentItems.length;
@@ -42,7 +48,8 @@ export async function parallelScan(
 
 async function getItemsFromSegment(
   scanParams: ScanCommandInput,
-  {concurrency, segmentIndex}: {concurrency: number; segmentIndex: number}
+  {concurrency, segmentIndex}: {concurrency: number; segmentIndex: number},
+  credentials?: Credentials
 ): Promise<ScanCommandOutput['Items']> {
   const segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
@@ -62,7 +69,7 @@ async function getItemsFromSegment(
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount;
 

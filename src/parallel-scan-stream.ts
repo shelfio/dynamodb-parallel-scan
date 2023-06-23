@@ -6,6 +6,7 @@ import {Readable} from 'stream';
 import type {ScanCommandInput} from '@aws-sdk/lib-dynamodb';
 import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import {getTableItemsCount, scan} from './ddb';
+import type {Credentials} from './ddb';
 import {Blocker} from './blocker';
 
 const debug = getDebugger('ddb-parallel-scan');
@@ -20,9 +21,10 @@ export async function parallelScanAsStream(
     concurrency,
     chunkSize,
     highWaterMark = Number.MAX_SAFE_INTEGER,
-  }: {concurrency: number; chunkSize: number; highWaterMark?: number}
+  }: {concurrency: number; chunkSize: number; highWaterMark?: number},
+  credentials?: Credentials
 ): Promise<Readable> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName, credentials);
 
   const segments: number[] = times(concurrency);
 
@@ -46,14 +48,17 @@ export async function parallelScanAsStream(
 
   Promise.all(
     segments.map((_, segmentIndex) =>
-      getItemsFromSegment({
-        scanParams,
-        stream,
-        concurrency,
-        segmentIndex,
-        chunkSize,
-        blocker,
-      })
+      getItemsFromSegment(
+        {
+          scanParams,
+          stream,
+          concurrency,
+          segmentIndex,
+          chunkSize,
+          blocker,
+        },
+        credentials
+      )
     )
   ).then(() => {
     // mark that there will be nothing else pushed into a stream
@@ -63,21 +68,24 @@ export async function parallelScanAsStream(
   return stream;
 }
 
-async function getItemsFromSegment({
-  scanParams,
-  stream,
-  concurrency,
-  segmentIndex,
-  chunkSize,
-  blocker,
-}: {
-  scanParams: ScanCommandInput;
-  stream: Readable;
-  concurrency: number;
-  segmentIndex: number;
-  chunkSize: number;
-  blocker: Blocker;
-}): Promise<void> {
+async function getItemsFromSegment(
+  {
+    scanParams,
+    stream,
+    concurrency,
+    segmentIndex,
+    chunkSize,
+    blocker,
+  }: {
+    scanParams: ScanCommandInput;
+    stream: Readable;
+    concurrency: number;
+    segmentIndex: number;
+    chunkSize: number;
+    blocker: Blocker;
+  },
+  credentials?: Credentials
+): Promise<void> {
   let segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
 
@@ -98,7 +106,7 @@ async function getItemsFromSegment({
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount;
 
