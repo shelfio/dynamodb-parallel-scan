@@ -13,8 +13,7 @@ let totalFetchedItemsCount = 0;
 
 export async function parallelScan(
   scanParams: ScanCommandInput,
-  {concurrency}: {concurrency: number},
-  credentials?: Credentials
+  {concurrency, credentials}: {concurrency: number; credentials?: Credentials}
 ): Promise<ScanCommandOutput['Items']> {
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, credentials);
 
