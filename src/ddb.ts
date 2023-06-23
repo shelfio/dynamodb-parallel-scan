@@ -8,6 +8,8 @@ import type {
 } from '@aws-sdk/lib-dynamodb';
 
 const isTest = process.env.JEST_WORKER_ID;
+const endpoint = process.env.DYNAMODB_ENDPOINT;
+const region = process.env.REGION;
 
 export type Credentials = {
   accessKeyId: string;
@@ -17,9 +19,9 @@ export type Credentials = {
 const ddbv3Client = (credentials?: Credentials) =>
   new DynamoDBClient({
     ...(isTest && {
-      endpoint: 'http://localhost:8000',
+      endpoint: endpoint ?? 'http://localhost:8000',
       tls: false,
-      region: 'local-env',
+      region: region ?? 'local-env',
     }),
     credentials: getCredentials(credentials),
   });
@@ -53,7 +55,7 @@ export async function getTableItemsCount(
   const command = new DescribeTableCommand({TableName: tableName});
   const resp = await ddbv3Client(credentials).send(command);
 
-  return resp?.Table?.ItemCount || 0;
+  return resp.Table!.ItemCount;
 }
 
 export function insertMany(

@@ -16,7 +16,7 @@ export async function parallelScan(
   {concurrency}: {concurrency: number},
   credentials?: Credentials
 ): Promise<ScanCommandOutput['Items']> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName, credentials);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, credentials);
 
   const segments: number[] = times(concurrency);
   const totalItems: ScanCommandOutput['Items'] = [];
@@ -33,8 +33,8 @@ export async function parallelScan(
         credentials,
       });
 
-      totalItems.push(...segmentItems);
-      totalFetchedItemsCount += segmentItems.length;
+      totalItems.push(...segmentItems!);
+      totalFetchedItemsCount += segmentItems!.length;
     })
   );
 
@@ -71,14 +71,14 @@ async function getItemsFromSegment(
 
     const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
     ExclusiveStartKey = LastEvaluatedKey;
-    totalScannedItemsCount += ScannedCount;
+    totalScannedItemsCount += ScannedCount!;
 
-    segmentItems.push(...Items);
+    segmentItems.push(...Items!);
 
     debug(
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
         `[${segmentIndex}/${concurrency}] [time:${Date.now() - now}ms] ` +
-        `[fetched:${Items.length}] ` +
+        `[fetched:${Items!.length}] ` +
         `[total (fetched/scanned/table-size):${totalFetchedItemsCount}/${totalScannedItemsCount}/${totalTableItemsCount}]`
     );
   } while (ExclusiveStartKey);
