@@ -1,10 +1,11 @@
+import {Readable} from 'stream';
 import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import chunk from 'lodash.chunk';
 import getDebugger from 'debug';
-import {Readable} from 'stream';
 import type {ScanCommandInput} from '@aws-sdk/lib-dynamodb';
 import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
+import type {Credentials} from './ddb';
 import {getTableItemsCount, scan} from './ddb';
 import {Blocker} from './blocker';
 
@@ -20,9 +21,10 @@ export async function parallelScanAsStream(
     concurrency,
     chunkSize,
     highWaterMark = Number.MAX_SAFE_INTEGER,
-  }: {concurrency: number; chunkSize: number; highWaterMark?: number}
+    credentials,
+  }: {concurrency: number; chunkSize: number; highWaterMark?: number; credentials?: Credentials}
 ): Promise<Readable> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, credentials);
 
   const segments: number[] = times(concurrency);
 
@@ -53,6 +55,7 @@ export async function parallelScanAsStream(
         segmentIndex,
         chunkSize,
         blocker,
+        credentials,
       })
     )
   ).then(() => {
@@ -70,6 +73,7 @@ async function getItemsFromSegment({
   segmentIndex,
   chunkSize,
   blocker,
+  credentials,
 }: {
   scanParams: ScanCommandInput;
   stream: Readable;
@@ -77,6 +81,7 @@ async function getItemsFromSegment({
   segmentIndex: number;
   chunkSize: number;
   blocker: Blocker;
+  credentials?: Credentials;
 }): Promise<void> {
   let segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
@@ -98,7 +103,7 @@ async function getItemsFromSegment({
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount!;
 
