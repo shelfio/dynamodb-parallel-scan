@@ -31,10 +31,7 @@ const getCredentials = (credentials?: Credentials) => {
     return credentials;
   }
 
-  return {
-    accessKeyId: 'fakeMyKeyId',
-    secretAccessKey: 'fakeSecretAccessKey',
-  };
+  return undefined;
 };
 const ddbv3DocClient = (credentials?: Credentials) =>
   DynamoDBDocumentClient.from(ddbv3Client(credentials));
