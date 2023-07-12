@@ -1,6 +1,6 @@
 {
   "name": "@shelf/dynamodb-parallel-scan",
-  "version": "3.5.2",
+  "version": "3.5.3",
   "description": "Scan large DynamoDB tables faster with parallelism",
   "keywords": [
     "aws",
