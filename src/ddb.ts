@@ -31,6 +31,13 @@ const getCredentials = (credentials?: Credentials) => {
     return credentials;
   }
 
+  if (isTest) {
+    return {
+      accessKeyId: 'fakeMyKeyId',
+      secretAccessKey: 'fakeSecretAccessKey',
+    };
+  }
+
   return undefined;
 };
 const ddbv3DocClient = (credentials?: Credentials) =>
