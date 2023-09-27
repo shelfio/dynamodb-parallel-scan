@@ -59,7 +59,7 @@
     "@shelf/jest-dynamodb": "3.4.1",
     "@shelf/prettier-config": "1.0.0",
     "@shelf/tsconfig": "0.0.9",
-    "@types/debug": "4.1.8",
+    "@types/debug": "4.1.9",
     "@types/jest": "29.5.5",
     "@types/lodash.chunk": "4.2.7",
     "@types/lodash.clonedeep": "4.5.7",
