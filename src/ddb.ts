@@ -17,7 +17,7 @@ export type Credentials = {
   sessionToken: string;
 };
 
-let ddbClient;
+let ddbClient: DynamoDBClient;
 const ddbv3Client = (credentials?: Credentials) => {
   if (ddbClient) {
     return ddbClient;
@@ -48,7 +48,7 @@ const getCredentials = (credentials?: Credentials) => {
   return undefined;
 };
 
-let ddbDocumentClient;
+let ddbDocumentClient: DynamoDBDocumentClient;
 const ddbv3DocClient = (credentials?: Credentials) => {
   if (ddbDocumentClient) {
     return ddbDocumentClient;
