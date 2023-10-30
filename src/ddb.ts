@@ -16,8 +16,13 @@ export type Credentials = {
   secretAccessKey: string;
   sessionToken: string;
 };
-const ddbv3Client = (credentials?: Credentials) =>
-  new DynamoDBClient({
+
+let ddbClient;
+const ddbv3Client = (credentials?: Credentials) => {
+  if (ddbClient) {
+    return ddbClient;
+  }
+  ddbClient = new DynamoDBClient({
     ...(isTest && {
       endpoint: endpoint ?? 'http://localhost:8000',
       tls: false,
@@ -25,6 +30,8 @@ const ddbv3Client = (credentials?: Credentials) =>
     }),
     credentials: getCredentials(credentials),
   });
+  return ddbClient;
+}
 
 const getCredentials = (credentials?: Credentials) => {
   if (credentials && Object.keys(credentials).length) {
@@ -40,8 +47,15 @@ const getCredentials = (credentials?: Credentials) => {
 
   return undefined;
 };
-const ddbv3DocClient = (credentials?: Credentials) =>
-  DynamoDBDocumentClient.from(ddbv3Client(credentials));
+
+let ddbDocumentClient;
+const ddbv3DocClient = (credentials?: Credentials) => {
+  if (ddbDocumentClient) {
+    return ddbDocumentClient;
+  }
+  ddbDocumentClient = DynamoDBDocumentClient.from(ddbv3Client(credentials));
+  return ddbDocumentClient;
+}
 
 export function scan(
   params: ScanCommandInput,
