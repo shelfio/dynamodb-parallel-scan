@@ -5,9 +5,11 @@ import chunk from 'lodash.chunk';
 import getDebugger from 'debug';
 import type {ScanCommandInput} from '@aws-sdk/lib-dynamodb';
 import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
+import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
 import type {Credentials} from './ddb';
 import {getTableItemsCount, scan} from './ddb';
 import {Blocker} from './blocker';
+import {ddbv3Client} from './clients';
 
 const debug = getDebugger('ddb-parallel-scan');
 
@@ -24,7 +26,8 @@ export async function parallelScanAsStream(
     credentials,
   }: {concurrency: number; chunkSize: number; highWaterMark?: number; credentials?: Credentials}
 ): Promise<Readable> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, credentials);
+  const client = ddbv3Client(credentials);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, client);
 
   const segments: number[] = times(concurrency);
 
@@ -55,7 +58,7 @@ export async function parallelScanAsStream(
         segmentIndex,
         chunkSize,
         blocker,
-        credentials,
+        client,
       })
     )
   ).then(() => {
@@ -66,6 +69,7 @@ export async function parallelScanAsStream(
   return stream;
 }
 
+// eslint-disable-next-line complexity
 async function getItemsFromSegment({
   scanParams,
   stream,
@@ -73,7 +77,7 @@ async function getItemsFromSegment({
   segmentIndex,
   chunkSize,
   blocker,
-  credentials,
+  client,
 }: {
   scanParams: ScanCommandInput;
   stream: Readable;
@@ -81,7 +85,7 @@ async function getItemsFromSegment({
   segmentIndex: number;
   chunkSize: number;
   blocker: Blocker;
-  credentials?: Credentials;
+  client: DynamoDBClient;
 }): Promise<void> {
   let segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
@@ -103,7 +107,7 @@ async function getItemsFromSegment({
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, client);
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount!;
 

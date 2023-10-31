@@ -1,5 +1,6 @@
 import {insertMany} from './ddb';
 import {parallelScan} from './parallel-scan';
+import {ddbv3DocClient, ddbv3Client} from './clients';
 
 describe('parallelScan', () => {
   const files = [
@@ -16,7 +17,8 @@ describe('parallelScan', () => {
   ];
 
   beforeAll(async () => {
-    await insertMany({items: files, tableName: 'files'});
+    const docClient = ddbv3DocClient();
+    await insertMany({items: files, tableName: 'files'}, docClient);
   });
 
   it('should return all items with concurrency 1', async () => {
