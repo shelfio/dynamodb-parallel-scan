@@ -69,7 +69,6 @@ export async function parallelScanAsStream(
   return stream;
 }
 
-// eslint-disable-next-line complexity
 async function getItemsFromSegment({
   scanParams,
   stream,
