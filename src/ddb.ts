@@ -7,72 +7,28 @@ import type {
   ScanCommandOutput,
 } from '@aws-sdk/lib-dynamodb';
 
-const isTest = process.env.JEST_WORKER_ID;
-const endpoint = process.env.DYNAMODB_ENDPOINT;
-const region = process.env.REGION;
-
 export type Credentials = {
   accessKeyId: string;
   secretAccessKey: string;
   sessionToken: string;
 };
 
-let ddbClient: DynamoDBClient;
-const ddbv3Client = (credentials?: Credentials) => {
-  if (ddbClient) {
-    return ddbClient;
-  }
-  ddbClient = new DynamoDBClient({
-    ...(isTest && {
-      endpoint: endpoint ?? 'http://localhost:8000',
-      tls: false,
-      region: region ?? 'local-env',
-    }),
-    credentials: getCredentials(credentials),
-  });
-  return ddbClient;
-}
-
-const getCredentials = (credentials?: Credentials) => {
-  if (credentials && Object.keys(credentials).length) {
-    return credentials;
-  }
-
-  if (isTest) {
-    return {
-      accessKeyId: 'fakeMyKeyId',
-      secretAccessKey: 'fakeSecretAccessKey',
-    };
-  }
-
-  return undefined;
-};
-
-let ddbDocumentClient: DynamoDBDocumentClient;
-const ddbv3DocClient = (credentials?: Credentials) => {
-  if (ddbDocumentClient) {
-    return ddbDocumentClient;
-  }
-  ddbDocumentClient = DynamoDBDocumentClient.from(ddbv3Client(credentials));
-  return ddbDocumentClient;
-}
-
 export function scan(
   params: ScanCommandInput,
-  credentials?: Credentials
+  client: DynamoDBClient
 ): Promise<ScanCommandOutput> {
   const command = new ScanCommand(params);
 
   // @ts-ignore
-  return ddbv3Client(credentials).send(command);
+  return client.send(command);
 }
 
 export async function getTableItemsCount(
   tableName: string,
-  credentials?: Credentials
+  client: DynamoDBClient
 ): Promise<number> {
   const command = new DescribeTableCommand({TableName: tableName});
-  const resp = await ddbv3Client(credentials).send(command);
+  const resp = await client.send(command);
 
   return resp.Table!.ItemCount!;
 }
@@ -85,7 +41,7 @@ export function insertMany(
     items: any[];
     tableName: string;
   },
-  credentials?: Credentials
+  docClient: DynamoDBDocumentClient
 ): Promise<BatchWriteCommandOutput> {
   const params: BatchWriteCommandInput['RequestItems'] = {
     [tableName]: items.map(item => {
@@ -97,12 +53,12 @@ export function insertMany(
     }),
   };
 
-  return batchWrite(params, credentials);
+  return batchWrite(params, docClient);
 }
 
 function batchWrite(
   items: BatchWriteCommandInput['RequestItems'],
-  credentials?: Credentials
+  docClient: DynamoDBDocumentClient
 ): Promise<BatchWriteCommandOutput> {
   const command = new BatchWriteCommand({
     RequestItems: items,
@@ -111,5 +67,5 @@ function batchWrite(
   });
 
   // @ts-ignore
-  return ddbv3DocClient(credentials).send(command);
+  return docClient.send(command);
 }

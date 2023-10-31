@@ -3,7 +3,9 @@ import times from 'lodash.times';
 import getDebugger from 'debug';
 import type {ScanCommandInput, ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import type {Credentials} from './ddb';
+import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
 import {getTableItemsCount, scan} from './ddb';
+import {ddbv3Client} from './clients';
 
 const debug = getDebugger('ddb-parallel-scan');
 
@@ -15,7 +17,8 @@ export async function parallelScan(
   scanParams: ScanCommandInput,
   {concurrency, credentials}: {concurrency: number; credentials?: Credentials}
 ): Promise<ScanCommandOutput['Items']> {
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, credentials);
+  const client = ddbv3Client(credentials);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, client);
 
   const segments: number[] = times(concurrency);
   const totalItems: ScanCommandOutput['Items'] = [];
@@ -29,7 +32,7 @@ export async function parallelScan(
       const segmentItems = await getItemsFromSegment(scanParams, {
         concurrency,
         segmentIndex,
-        credentials,
+        client,
       });
 
       totalItems.push(...segmentItems!);
@@ -47,8 +50,8 @@ async function getItemsFromSegment(
   {
     concurrency,
     segmentIndex,
-    credentials,
-  }: {concurrency: number; segmentIndex: number; credentials?: Credentials}
+    client,
+  }: {concurrency: number; segmentIndex: number; client: DynamoDBClient}
 ): Promise<ScanCommandOutput['Items']> {
   const segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
@@ -68,7 +71,7 @@ async function getItemsFromSegment(
       params.ExclusiveStartKey = ExclusiveStartKey;
     }
 
-    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, credentials);
+    const {Items, LastEvaluatedKey, ScannedCount} = await scan(params, client);
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount!;
 

@@ -3,6 +3,7 @@ jest.setTimeout(25000);
 import {uniq} from 'lodash';
 import * as ddbHelpers from './ddb';
 import {parallelScanAsStream} from './parallel-scan-stream';
+import {ddbv3DocClient} from './clients'
 
 function delay(ms: number) {
   return new Promise(r => {
@@ -25,7 +26,8 @@ describe('parallelScanAsStream', () => {
   ];
 
   beforeAll(async () => {
-    await ddbHelpers.insertMany({items: files, tableName: 'files'});
+    const docClient = ddbv3DocClient();
+    await ddbHelpers.insertMany({items: files, tableName: 'files'}, docClient);
   });
 
   it('should stream items with chunks of 2 with concurrency 1', async () => {
@@ -82,16 +84,20 @@ describe('parallelScanAsStream', () => {
     const megaByte = Buffer.alloc(1024 * 390); // Maximum allowed item size in ddb is 400KB
     const megaByteString = megaByte.toString();
 
-    await ddbHelpers.insertMany({
-      items: [
-        {id: 'some-big-file-id-1', isLarge: true, payload: megaByteString},
-        {id: 'some-big-file-id-2', isLarge: true, payload: megaByteString},
-        {id: 'some-big-file-id-3', isLarge: true, payload: megaByteString},
-        {id: 'some-big-file-id-4', isLarge: true, payload: megaByteString},
-        {id: 'some-big-file-id-5', isLarge: true, payload: megaByteString},
-      ],
-      tableName: 'files',
-    });
+    const docClient = ddbv3DocClient();
+    await ddbHelpers.insertMany(
+      {
+        items: [
+          {id: 'some-big-file-id-1', isLarge: true, payload: megaByteString},
+          {id: 'some-big-file-id-2', isLarge: true, payload: megaByteString},
+          {id: 'some-big-file-id-3', isLarge: true, payload: megaByteString},
+          {id: 'some-big-file-id-4', isLarge: true, payload: megaByteString},
+          {id: 'some-big-file-id-5', isLarge: true, payload: megaByteString},
+        ],
+        tableName: 'files',
+      },
+      docClient
+    );
 
     const stream = await parallelScanAsStream(
       {
