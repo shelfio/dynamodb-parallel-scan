@@ -1,6 +1,6 @@
 import {insertMany} from './ddb';
 import {parallelScan} from './parallel-scan';
-import {ddbv3DocClient, ddbv3Client} from './clients';
+import {ddbv3DocClient} from './clients';
 
 describe('parallelScan', () => {
   const files = [
