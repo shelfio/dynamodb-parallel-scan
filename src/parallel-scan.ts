@@ -15,10 +15,10 @@ let totalFetchedItemsCount = 0;
 
 export async function parallelScan(
   scanParams: ScanCommandInput,
-  {concurrency, credentials}: {concurrency: number; credentials?: Credentials}
+  {concurrency, credentials, client}: {concurrency: number; credentials?: Credentials, client?: DynamoDBClient}
 ): Promise<ScanCommandOutput['Items']> {
-  const client = ddbv3Client(credentials);
-  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, client);
+  const ddbClient = client ?? ddbv3Client(credentials);
+  totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, ddbClient);
 
   const segments: number[] = times(concurrency);
   const totalItems: ScanCommandOutput['Items'] = [];
@@ -32,7 +32,7 @@ export async function parallelScan(
       const segmentItems = await getItemsFromSegment(scanParams, {
         concurrency,
         segmentIndex,
-        client,
+        client: ddbClient,
       });
 
       totalItems.push(...segmentItems!);
