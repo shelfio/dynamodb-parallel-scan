@@ -24,8 +24,14 @@ export async function parallelScanAsStream(
     chunkSize,
     highWaterMark = Number.MAX_SAFE_INTEGER,
     credentials,
-    client
-  }: {concurrency: number; chunkSize: number; highWaterMark?: number; credentials?: Credentials, client?: DynamoDBClient}
+    client,
+  }: {
+    concurrency: number;
+    chunkSize: number;
+    highWaterMark?: number;
+    credentials?: Credentials;
+    client?: DynamoDBClient;
+  }
 ): Promise<Readable> {
   const ddbClient = client ?? ddbv3Client(credentials);
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, ddbClient);
