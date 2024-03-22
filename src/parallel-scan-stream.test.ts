@@ -3,7 +3,7 @@ jest.setTimeout(25000);
 import {uniq} from 'lodash';
 import * as ddbHelpers from './ddb';
 import {parallelScanAsStream} from './parallel-scan-stream';
-import {ddbv3DocClient} from './clients'
+import {ddbv3DocClient} from './clients';
 
 function delay(ms: number) {
   return new Promise(r => {

@@ -1,5 +1,7 @@
-import {DescribeTableCommand, DynamoDBClient} from '@aws-sdk/client-dynamodb';
-import {BatchWriteCommand, DynamoDBDocumentClient, ScanCommand} from '@aws-sdk/lib-dynamodb';
+import {DescribeTableCommand} from '@aws-sdk/client-dynamodb';
+import {BatchWriteCommand, ScanCommand} from '@aws-sdk/lib-dynamodb';
+import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
+import type {DynamoDBDocumentClient} from '@aws-sdk/lib-dynamodb';
 import type {
   BatchWriteCommandInput,
   BatchWriteCommandOutput,
@@ -13,10 +15,7 @@ export type Credentials = {
   sessionToken: string;
 };
 
-export function scan(
-  params: ScanCommandInput,
-  client: DynamoDBClient
-): Promise<ScanCommandOutput> {
+export function scan(params: ScanCommandInput, client: DynamoDBClient): Promise<ScanCommandOutput> {
   const command = new ScanCommand(params);
 
   // @ts-ignore
