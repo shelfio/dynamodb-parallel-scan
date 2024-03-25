@@ -1,5 +1,6 @@
 import {DescribeTableCommand} from '@aws-sdk/client-dynamodb';
 import {BatchWriteCommand, ScanCommand} from '@aws-sdk/lib-dynamodb';
+import type {DynamoDBDocument} from '@aws-sdk/lib-dynamodb';
 import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
 import type {DynamoDBDocumentClient} from '@aws-sdk/lib-dynamodb';
 import type {
@@ -15,7 +16,10 @@ export type Credentials = {
   sessionToken: string;
 };
 
-export function scan(params: ScanCommandInput, client: DynamoDBClient): Promise<ScanCommandOutput> {
+export function scan(
+  params: ScanCommandInput,
+  client: DynamoDBClient | DynamoDBDocument
+): Promise<ScanCommandOutput> {
   const command = new ScanCommand(params);
 
   // @ts-ignore
@@ -24,9 +28,10 @@ export function scan(params: ScanCommandInput, client: DynamoDBClient): Promise<
 
 export async function getTableItemsCount(
   tableName: string,
-  client: DynamoDBClient
+  client: DynamoDBClient | DynamoDBDocument
 ): Promise<number> {
   const command = new DescribeTableCommand({TableName: tableName});
+  // @ts-ignore
   const resp = await client.send(command);
 
   return resp.Table!.ItemCount!;

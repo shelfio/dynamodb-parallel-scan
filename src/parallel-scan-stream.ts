@@ -3,7 +3,7 @@ import cloneDeep from 'lodash.clonedeep';
 import times from 'lodash.times';
 import chunk from 'lodash.chunk';
 import getDebugger from 'debug';
-import type {ScanCommandInput} from '@aws-sdk/lib-dynamodb';
+import type {DynamoDBDocument, ScanCommandInput} from '@aws-sdk/lib-dynamodb';
 import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
 import type {Credentials} from './ddb';
@@ -30,7 +30,7 @@ export async function parallelScanAsStream(
     chunkSize: number;
     highWaterMark?: number;
     credentials?: Credentials;
-    client?: DynamoDBClient;
+    client?: DynamoDBClient | DynamoDBDocument;
   }
 ): Promise<Readable> {
   const ddbClient = client ?? ddbv3Client(credentials);
@@ -91,7 +91,7 @@ async function getItemsFromSegment({
   segmentIndex: number;
   chunkSize: number;
   blocker: Blocker;
-  client: DynamoDBClient;
+  client: DynamoDBClient | DynamoDBDocument;
 }): Promise<void> {
   let segmentItems: ScanCommandOutput['Items'] = [];
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
