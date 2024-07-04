@@ -40,7 +40,9 @@ export async function parallelScan(
         client: ddbClient,
       });
 
-      totalItems.push(...segmentItems!);
+      for (const segmentItem of segmentItems) {
+        totalItems.push(segmentItem);
+      }
       totalFetchedItemsCount += segmentItems!.length;
     })
   );
@@ -80,7 +82,9 @@ async function getItemsFromSegment(
     ExclusiveStartKey = LastEvaluatedKey;
     totalScannedItemsCount += ScannedCount!;
 
-    segmentItems.push(...Items!);
+    for (const item of Items) {
+      segmentItems.push(item);
+    }
 
     debug(
       `(${Math.round((totalScannedItemsCount / totalTableItemsCount) * 100)}%) ` +
