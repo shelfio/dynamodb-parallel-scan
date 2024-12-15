@@ -65,7 +65,7 @@
     "@types/lodash.clonedeep": "4.5.9",
     "@types/lodash.times": "4.3.9",
     "@types/node": "16",
-    "eslint": "8.57.0",
+    "eslint": "8.57.1",
     "husky": "8.0.3",
     "jest": "29.7.0",
     "lint-staged": "13.3.0",
