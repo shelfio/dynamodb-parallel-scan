@@ -55,7 +55,7 @@
     "@babel/cli": "7.27.2",
     "@babel/core": "7.27.4",
     "@shelf/babel-config": "2.0.1",
-    "@shelf/eslint-config": "2.29.3",
+    "@shelf/eslint-config": "5.2.3",
     "@shelf/jest-dynamodb": "3.4.1",
     "@shelf/prettier-config": "1.0.0",
     "@shelf/tsconfig": "0.0.9",
