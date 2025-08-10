@@ -54,7 +54,7 @@
     "@aws-sdk/lib-dynamodb": "3.535.0",
     "@babel/cli": "7.27.2",
     "@babel/core": "7.27.4",
-    "@shelf/babel-config": "2.0.1",
+    "@shelf/babel-config": "3.0.0",
     "@shelf/eslint-config": "2.29.3",
     "@shelf/jest-dynamodb": "3.4.1",
     "@shelf/prettier-config": "1.0.0",
