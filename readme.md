@@ -92,10 +92,7 @@ const {parallelScan, parallelScanAsStream} = await import('@shelf/dynamodb-paral
 ## Publish
 
 ```sh
-$ git checkout master
-$ pnpm version
-$ pnpm publish
-$ git push origin master --tags
+$ pnpm dlx np
 ```
 
 ## License

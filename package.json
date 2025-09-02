@@ -49,8 +49,6 @@
   "dependencies": {
     "debug": "4.4.1",
     "lodash.chunk": "4.2.0",
-    
-    
     "p-map": "7.0.3"
   },
   "devDependencies": {
@@ -65,8 +63,6 @@
     "@types/debug": "4.1.12",
     "@types/jest": "30.0.0",
     "@types/lodash.chunk": "4.2.9",
-    
-    
     "@types/node": "24.3.0",
     "eslint": "9.34.0",
     "husky": "9.1.7",
@@ -84,5 +80,6 @@
   },
   "publishConfig": {
     "access": "public"
-  }
+  },
+  "packageManager": "pnpm@10.15.0"
 }
