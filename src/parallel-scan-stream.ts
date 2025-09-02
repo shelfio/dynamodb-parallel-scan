@@ -1,15 +1,13 @@
 import {Readable} from 'stream';
-import cloneDeep from 'lodash.clonedeep';
-import times from 'lodash.times';
 import chunk from 'lodash.chunk';
 import getDebugger from 'debug';
 import type {DynamoDBDocument, ScanCommandInput} from '@aws-sdk/lib-dynamodb';
 import type {ScanCommandOutput} from '@aws-sdk/lib-dynamodb';
 import type {DynamoDBClient} from '@aws-sdk/client-dynamodb';
-import type {Credentials} from './ddb';
-import {getTableItemsCount, scan} from './ddb';
-import {Blocker} from './blocker';
-import {ddbv3Client} from './clients';
+import type {Credentials} from './ddb.js';
+import {getTableItemsCount, scan} from './ddb.js';
+import {Blocker} from './blocker.js';
+import {ddbv3Client} from './clients.js';
 
 const debug = getDebugger('ddb-parallel-scan');
 
@@ -36,7 +34,7 @@ export async function parallelScanAsStream(
   const ddbClient = client ?? ddbv3Client(credentials);
   totalTableItemsCount = await getTableItemsCount(scanParams.TableName!, ddbClient);
 
-  const segments: number[] = times(concurrency);
+  const segments: number[] = Array.from({length: concurrency}, (_, i) => i);
 
   const blocker = new Blocker();
 
@@ -97,7 +95,7 @@ async function getItemsFromSegment({
   let ExclusiveStartKey: ScanCommandInput['ExclusiveStartKey'];
 
   const params: ScanCommandInput = {
-    ...cloneDeep(scanParams),
+    ...structuredClone(scanParams),
     Segment: segmentIndex,
     TotalSegments: concurrency,
   };

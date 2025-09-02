@@ -5,7 +5,7 @@ export class Blocker {
 
   constructor() {
     this._promise = Promise.resolve();
-    this._promiseResolver = () => {}; // eslint-disable-line @typescript-eslint/no-empty-function
+    this._promiseResolver = () => {};
     this._isBlocked = false;
   }
 

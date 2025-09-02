@@ -1,9 +1,10 @@
 jest.setTimeout(25000);
 
 import {uniq} from 'lodash';
-import * as ddbHelpers from './ddb';
+import {ScanCommand} from '@aws-sdk/lib-dynamodb';
 import {parallelScanAsStream} from './parallel-scan-stream';
-import {ddbv3DocClient} from './clients';
+import {ddbv3Client, ddbv3DocClient} from './clients';
+import {insertMany} from './ddb.js';
 
 function delay(ms: number) {
   return new Promise(r => {
@@ -27,7 +28,7 @@ describe('parallelScanAsStream', () => {
 
   beforeAll(async () => {
     const docClient = ddbv3DocClient();
-    await ddbHelpers.insertMany({items: files, tableName: 'files'}, docClient);
+    await insertMany({items: files, tableName: 'files'}, docClient);
   });
 
   it('should stream items with chunks of 2 with concurrency 1', async () => {
@@ -43,7 +44,7 @@ describe('parallelScanAsStream', () => {
           ':false': false,
         },
       },
-      {concurrency: 1, chunkSize: 2}
+      {concurrency: 1, chunkSize: 2, client: ddbv3Client()}
     );
 
     for await (const chunk of stream) {
@@ -64,7 +65,7 @@ describe('parallelScanAsStream', () => {
           ':false': false,
         },
       },
-      {concurrency: 5, chunkSize: 2}
+      {concurrency: 5, chunkSize: 2, client: ddbv3Client()}
     );
 
     const allItems = [];
@@ -79,13 +80,14 @@ describe('parallelScanAsStream', () => {
   });
 
   it('should pause calling dynamodb after highWaterMark reached', async () => {
-    const scanSpy = jest.spyOn(ddbHelpers, 'scan');
+    const client = ddbv3Client();
+    const sendSpy = jest.spyOn(client as any, 'send');
 
     const megaByte = Buffer.alloc(1024 * 390); // Maximum allowed item size in ddb is 400KB
     const megaByteString = megaByte.toString();
 
     const docClient = ddbv3DocClient();
-    await ddbHelpers.insertMany(
+    await insertMany(
       {
         items: [
           {id: 'some-big-file-id-1', isLarge: true, payload: megaByteString},
@@ -111,7 +113,7 @@ describe('parallelScanAsStream', () => {
           ':true': true,
         },
       },
-      {concurrency: 1, chunkSize: 1, highWaterMark: 1}
+      {concurrency: 1, chunkSize: 1, highWaterMark: 1, client}
     );
 
     const scanCallsByIteration = [];
@@ -120,7 +122,10 @@ describe('parallelScanAsStream', () => {
 
       await delay(1000);
 
-      scanCallsByIteration.push(scanSpy.mock.calls.length);
+      const scanCalls = sendSpy.mock.calls.filter(
+        ([command]) => command instanceof ScanCommand
+      ).length;
+      scanCallsByIteration.push(scanCalls);
     }
 
     const scanCallsByIterationUniq = uniq(scanCallsByIteration);

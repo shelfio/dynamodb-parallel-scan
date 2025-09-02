@@ -1,2 +1,2 @@
-export * from './parallel-scan';
-export * from './parallel-scan-stream';
+export * from './parallel-scan.js';
+export * from './parallel-scan-stream.js';

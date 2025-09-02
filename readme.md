@@ -7,15 +7,16 @@
 ## Install
 
 ```
-$ yarn add @shelf/dynamodb-parallel-scan
+$ pnpm add @shelf/dynamodb-parallel-scan
 ```
 
-This library has 2 peer dependencies:
+This library targets ESM and AWS SDK v3. Install alongside peer deps:
 
-- `@aws-sdk/client-dynamodb`
-- `@aws-sdk/lib-dynamodb`
+```
+pnpm add @shelf/dynamodb-parallel-scan @aws-sdk/client-dynamodb @aws-sdk/lib-dynamodb
+```
 
-Make sure to install them alongside this library.
+Requires Node.js 22+.
 
 ## Why this is better than a regular scan
 
@@ -31,50 +32,54 @@ It allows receiving chunks of scanned items, wait until you process them, and th
 
 ### Fetch everything at once
 
-```js
-const {parallelScan} = require('@shelf/dynamodb-parallel-scan');
+```ts
+import {parallelScan} from '@shelf/dynamodb-parallel-scan';
 
-(async () => {
-  const items = await parallelScan(
-    {
-      TableName: 'files',
-      FilterExpression: 'attribute_exists(#fileSize)',
-      ExpressionAttributeNames: {
-        '#fileSize': 'fileSize',
-      },
-      ProjectionExpression: 'fileSize',
+const items = await parallelScan(
+  {
+    TableName: 'files',
+    FilterExpression: 'attribute_exists(#fileSize)',
+    ExpressionAttributeNames: {
+      '#fileSize': 'fileSize',
     },
-    {concurrency: 1000}
-  );
+    ProjectionExpression: 'fileSize',
+  },
+  {concurrency: 1000}
+);
 
-  console.log(items);
-})();
+console.log(items);
 ```
 
 ### Use as async generator (or streams)
 
 Note: `highWaterMark` determines items count threshold, so Parallel Scan can fetch `concurrency` \* 1MB more data even after highWaterMark was reached.
 
-```js
-const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
+```ts
+import {parallelScanAsStream} from '@shelf/dynamodb-parallel-scan';
 
-(async () => {
-  const stream = await parallelScanAsStream(
-    {
-      TableName: 'files',
-      FilterExpression: 'attribute_exists(#fileSize)',
-      ExpressionAttributeNames: {
-        '#fileSize': 'fileSize',
-      },
-      ProjectionExpression: 'fileSize',
+const stream = await parallelScanAsStream(
+  {
+    TableName: 'files',
+    FilterExpression: 'attribute_exists(#fileSize)',
+    ExpressionAttributeNames: {
+      '#fileSize': 'fileSize',
     },
-    {concurrency: 1000, chunkSize: 10000, highWaterMark: 10000}
-  );
+    ProjectionExpression: 'fileSize',
+  },
+  {concurrency: 1000, chunkSize: 10000, highWaterMark: 10000}
+);
 
-  for await (const items of stream) {
-    console.log(items); // 10k items here
-  }
-})();
+for await (const items of stream) {
+  console.log(items); // 10k items here
+}
+```
+
+### CommonJS Consumers
+
+This package is ESM-only. In CommonJS, use dynamic import:
+
+```js
+const {parallelScan, parallelScanAsStream} = await import('@shelf/dynamodb-parallel-scan');
 ```
 
 ## Read
@@ -88,8 +93,8 @@ const {parallelScanAsStream} = require('@shelf/dynamodb-parallel-scan');
 
 ```sh
 $ git checkout master
-$ yarn version
-$ yarn publish
+$ pnpm version
+$ pnpm publish
 $ git push origin master --tags
 ```
 
