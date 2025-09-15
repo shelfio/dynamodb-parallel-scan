@@ -47,7 +47,7 @@
   },
   "prettier": "@shelf/prettier-config",
   "dependencies": {
-    "debug": "4.4.1",
+    "debug": "4.4.3",
     "lodash.chunk": "4.2.0",
     "p-map": "7.0.3"
   },
