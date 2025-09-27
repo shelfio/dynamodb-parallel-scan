@@ -54,7 +54,7 @@
   "devDependencies": {
     "@aws-sdk/client-dynamodb": "3.879.0",
     "@aws-sdk/lib-dynamodb": "3.879.0",
-    "@swc/core": "1.13.5",
+    "@swc/core": "1.13.20",
     "@swc/jest": "0.2.39",
     "@shelf/eslint-config": "5.2.3",
     "@shelf/jest-dynamodb": "3.5.0",
