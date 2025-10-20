@@ -37,14 +37,6 @@
     "type-check": "tsc --noEmit",
     "type-check:watch": "pnpm run type-check -- --watch"
   },
-  "lint-staged": {
-    "*.{html,md,yml}": [
-      "prettier --write"
-    ],
-    "*.{js,ts,json}": [
-      "eslint --fix"
-    ]
-  },
   "prettier": "@shelf/prettier-config",
   "dependencies": {
     "debug": "4.4.1",
