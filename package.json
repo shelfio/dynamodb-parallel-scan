@@ -73,5 +73,13 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@10.15.0"
+  "packageManager": "pnpm@10.15.0",
+  "lint-staged": {
+    "*.{html,md,yml}": [
+      "prettier --write"
+    ],
+    "*.{js,ts,json}": [
+      "eslint --fix"
+    ]
+  }
 }
