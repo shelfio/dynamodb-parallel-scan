@@ -49,7 +49,7 @@
     "@shelf/eslint-config": "7.1.0",
     "@shelf/jest-dynamodb": "3.5.0",
     "@shelf/prettier-config": "1.0.0",
-    "@shelf/tsconfig": "0.1.0",
+    "@shelf/tsconfig": "0.2.0",
     "@swc/core": "1.13.5",
     "@swc/jest": "0.2.39",
     "@types/debug": "4.1.12",
@@ -61,7 +61,7 @@
     "jest": "30.1.2",
     "lint-staged": "16.1.6",
     "prettier": "3.6.2",
-    "typescript": "5.9.2"
+    "typescript": "6.0.3"
   },
   "peerDependencies": {
     "@aws-sdk/client-dynamodb": "3.x.x",
