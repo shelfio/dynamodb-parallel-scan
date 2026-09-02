@@ -30,14 +30,13 @@
     "build": "rm -rf lib/ && tsc -p tsconfig.json",
     "build:types": "tsc --emitDeclarationOnly --declaration --isolatedModules false --declarationDir lib",
     "coverage": "export JEST_DYNAMODB_CONFIG=$(pwd)/jest-dynamodb-config.cjs && jest --coverage",
-    "lint": "pnpm lint:ci --fix",
-    "lint:ci": "eslint .",
+    "lint": "oxfmt && eslint . --fix",
+    "lint:ci": "oxfmt --check && eslint .",
     "prepack": "pnpm build",
     "test": "export ENVIRONMENT=local JEST_DYNAMODB_CONFIG=$(pwd)/jest-dynamodb-config.cjs && jest src --runInBand --forceExit",
     "type-check": "tsc --noEmit",
     "type-check:watch": "pnpm run type-check -- --watch"
   },
-  "prettier": "@shelf/prettier-config",
   "dependencies": {
     "debug": "4.4.1",
     "lodash.chunk": "4.2.0",
@@ -48,7 +47,7 @@
     "@aws-sdk/lib-dynamodb": "3.879.0",
     "@shelf/eslint-config": "7.1.0",
     "@shelf/jest-dynamodb": "3.5.0",
-    "@shelf/prettier-config": "1.0.0",
+    "@shelf/prettier-config": "1.1.1",
     "@shelf/tsconfig": "0.2.0",
     "@swc/core": "1.13.5",
     "@swc/jest": "0.2.39",
@@ -60,7 +59,7 @@
     "husky": "9.1.7",
     "jest": "30.1.2",
     "lint-staged": "16.1.6",
-    "prettier": "3.6.2",
+    "oxfmt": "0.64.0",
     "typescript": "6.0.3"
   },
   "peerDependencies": {
@@ -76,9 +75,10 @@
   "packageManager": "pnpm@11.18.0",
   "lint-staged": {
     "*.{html,md,yml}": [
-      "prettier --write"
+      "oxfmt --no-error-on-unmatched-pattern"
     ],
     "*.{js,ts,json}": [
+      "oxfmt --no-error-on-unmatched-pattern",
       "eslint --fix"
     ]
   }
