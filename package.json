@@ -75,14 +75,14 @@
   "publishConfig": {
     "access": "public"
   },
-  "packageManager": "pnpm@11.18.0",
+  "packageManager": "pnpm@12.6.0",
   "lint-staged": {
     "*.{html,md,yml}": [
       "oxfmt --no-error-on-unmatched-pattern"
     ],
     "*.{js,ts,json}": [
-      "oxfmt --no-error-on-unmatched-pattern",
-      "eslint --fix"
+      "eslint --fix",
+      "oxfmt --no-error-on-unmatched-pattern"
     ]
   }
 }
