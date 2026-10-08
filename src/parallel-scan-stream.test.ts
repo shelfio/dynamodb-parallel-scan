@@ -1,6 +1,5 @@
 jest.setTimeout(25000);
 
-import {uniq} from 'lodash';
 import {ScanCommand} from '@aws-sdk/lib-dynamodb';
 import {parallelScanAsStream} from './parallel-scan-stream';
 import {ddbv3Client, ddbv3DocClient} from './clients';
@@ -128,7 +127,7 @@ describe('parallelScanAsStream', () => {
       scanCallsByIteration.push(scanCalls);
     }
 
-    const scanCallsByIterationUniq = uniq(scanCallsByIteration);
+    const scanCallsByIterationUniq = [...new Set(scanCallsByIteration)];
 
     expect(scanCallsByIterationUniq).toEqual([1, 2]);
   });
