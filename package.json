@@ -34,6 +34,7 @@
     "lint": "oxfmt && eslint . --fix",
     "lint:ci": "oxfmt --check && eslint .",
     "prepack": "pnpm build",
+    "prepare": "husky",
     "test": "export ENVIRONMENT=local JEST_DYNAMODB_CONFIG=$(pwd)/jest-dynamodb-config.cjs && jest src --runInBand --forceExit",
     "type-check": "tsc --noEmit",
     "type-check:watch": "pnpm run type-check -- --watch"
