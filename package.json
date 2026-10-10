@@ -56,13 +56,14 @@
     "@types/jest": "30.0.0",
     "@types/lodash.chunk": "4.2.9",
     "@types/node": "24.3.0",
+    "@typescript/native": "npm:typescript@7.0.2",
     "eslint": "10.8.0",
     "husky": "9.1.7",
     "jest": "30.1.2",
     "knip": "6.38.0",
     "lint-staged": "16.1.6",
     "oxfmt": "0.64.0",
-    "typescript": "6.0.3"
+    "typescript": "npm:@typescript/typescript6@6.0.2"
   },
   "peerDependencies": {
     "@aws-sdk/client-dynamodb": "3.x.x",
