@@ -2,3 +2,5 @@ allowBuilds:
   '@swc/core': false
   unrs-resolver: false
 pmOnFail: ignore
+minimumReleaseAgeExclude:
+  - '@shelf/*'
