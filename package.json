@@ -47,7 +47,7 @@
     "@aws-sdk/client-dynamodb": "3.879.0",
     "@aws-sdk/lib-dynamodb": "3.879.0",
     "@shelf/eslint-config": "9.0.0",
-    "@shelf/jest-dynamodb": "3.5.0",
+    "@shelf/jest-dynamodb": "4.0.3",
     "@shelf/tsconfig": "0.2.0",
     "@swc/core": "1.13.5",
     "@swc/jest": "0.2.39",
